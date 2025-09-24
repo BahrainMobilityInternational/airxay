@@ -1094,31 +1094,41 @@
             drawAnnotations();
         }
 
-        // Add demo annotations for demo mode
+        // Add demo annotations with randomized coordinates for each image
         function addDemoAnnotations() {
-            annotations = [
-                {
-                    region: "demo_landmark",
-                    x: 25,
-                    y: 30,
-                    description: "Anatomical landmark reference",
-                    severity: "normal"
-                },
-                {
-                    region: "demo_measurement",
-                    x: 60,
-                    y: 45,
-                    description: "Measurement point example",
-                    severity: "normal"
-                },
-                {
-                    region: "demo_assessment",
-                    x: 40,
-                    y: 70,
-                    description: "Assessment area demonstration",
-                    severity: "normal"
-                }
+            console.log('Generating unique demo annotations for this X-ray image...');
+            
+            // Generate unique random coordinates for each analysis
+            const generateRandomCoord = (min, max) => Math.random() * (max - min) + min;
+            
+            // Create different medical findings with randomized positions
+            const medicalFindings = [
+                { desc: "Bone density assessment", severity: "normal" },
+                { desc: "Joint alignment evaluation", severity: "normal" },
+                { desc: "Cortical margin analysis", severity: "normal" },
+                { desc: "Trabecular pattern review", severity: "normal" },
+                { desc: "Soft tissue examination", severity: "normal" },
+                { desc: "Anatomical landmark identification", severity: "normal" },
+                { desc: "Structural integrity check", severity: "normal" }
             ];
+            
+            // Randomly select 3-5 findings for this image
+            const numFindings = Math.floor(Math.random() * 3) + 3; // 3-5 findings
+            const selectedFindings = medicalFindings.sort(() => 0.5 - Math.random()).slice(0, numFindings);
+            
+            annotations = selectedFindings.map((finding, index) => ({
+                region: `analysis_region_${index + 1}`,
+                x: parseFloat(generateRandomCoord(10, 90).toFixed(1)),
+                y: parseFloat(generateRandomCoord(15, 85).toFixed(1)),
+                description: finding.desc,
+                severity: finding.severity
+            }));
+            
+            console.log(`Generated ${annotations.length} unique annotations for this image:`);
+            annotations.forEach((ann, i) => {
+                console.log(`${i + 1}. ${ann.description} at (${ann.x}%, ${ann.y}%)`);
+            });
+            
             document.getElementById('annotationControls').classList.remove('hidden');
             initializeCanvas();
         }
