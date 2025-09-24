@@ -429,6 +429,9 @@
         }
 
         function showError(message) {
+            // Only show errors in Poe environment, not in demo mode
+            if (!isPoeEnvironment) return;
+            
             // Create a simple error notification
             const errorDiv = document.createElement('div');
             errorDiv.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
