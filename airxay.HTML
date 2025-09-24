@@ -331,7 +331,7 @@
             try {
                 // Send image to AI for analysis
                 await window.Poe.sendUserMessage(
-                    "@Claude-Sonnet-4 You are an experienced radiologist AI assistant. Analyze this X-ray image with clinical precision. Provide a comprehensive radiological report in the following structure:\n\n**CLINICAL INFORMATION & TECHNIQUE:**\n- Image type and projection\n- Technical quality assessment\n- Patient positioning\n\n**FINDINGS:**\n- Skeletal structures (bones, joints, alignment)\n- Soft tissues (muscles, organs visible)\n- Specific measurements if applicable\n- Comparative analysis (bilateral comparison if relevant)\n\n**PATHOLOGICAL ASSESSMENT:**\n- Normal findings\n- Abnormal findings (if any)\n- Differential diagnoses\n- Severity grading\n\n**IMPRESSION:**\n- Primary diagnosis\n- Secondary findings\n- Clinical significance\n\n**RECOMMENDATIONS:**\n- Follow-up imaging if needed\n- Clinical correlation\n- Additional studies\n\nUse proper medical terminology and be specific about anatomical locations. Include confidence levels for findings. Remember this is for educational purposes only.",
+                    "@Claude-Sonnet-4 You are an experienced radiologist. Perform a systematic X-ray analysis with precise alignment assessment:\n\n**CLINICAL INFORMATION & TECHNIQUE:**\n- Projection type (AP/PA/Lateral/Oblique)\n- Technical adequacy (penetration, rotation, angulation)\n- Patient positioning assessment\n\n**ALIGNMENT ANALYSIS (Critical):**\n- Anatomical alignment lines and reference points\n- Angular measurements with normal ranges\n- Bilateral symmetry comparison\n- Joint congruency assessment\n- Bone axis relationships\n- Specific alignment parameters (e.g., cervical lordosis 20-40°, lumbar lordosis 40-60°)\n- Subluxation or dislocation assessment\n\n**SKELETAL FINDINGS:**\n- Bone morphology and architecture\n- Cortical continuity and thickness\n- Trabecular pattern analysis\n- Joint space measurements\n- Growth plate assessment (if applicable)\n\n**SOFT TISSUE EVALUATION:**\n- Soft tissue shadows and density\n- Swelling or asymmetry\n- Fat plane displacement\n\n**PATHOLOGICAL ASSESSMENT:**\n- Normal anatomical variants\n- Abnormal findings with severity grading\n- Differential diagnoses ranked by likelihood\n- Confidence levels for each finding\n\n**MEASUREMENTS & ANGLES:**\n- Provide specific angular measurements where applicable\n- Compare to established normal ranges\n- Note any deviation from anatomical norms\n\n**CLINICAL IMPRESSION:**\n- Primary diagnosis with confidence level\n- Secondary findings\n- Clinical significance and urgency\n\n**RECOMMENDATIONS:**\n- Additional imaging if needed\n- Clinical correlation requirements\n- Follow-up timeline\n\nBe extremely specific about alignment assessment as this is critical for diagnosis. Use precise anatomical terminology and provide numerical values where possible.",
                     {
                         attachments: [selectedFile],
                         handler: "xray-analysis",
@@ -358,110 +358,212 @@
                 analysisContent.classList.remove('hidden');
                 
                 const demoAnalysis = `
-# RADIOLOGICAL ANALYSIS REPORT
-**DEMO VERSION - For educational demonstration only**
+# COMPREHENSIVE RADIOLOGICAL ANALYSIS REPORT
+**DEMO VERSION - Advanced Alignment Assessment**
 
 ---
 
 ## CLINICAL INFORMATION & TECHNIQUE
 
 **Examination Type:** Digital Radiography  
-**Projection:** AP/Lateral view (example)  
-**Technical Quality:** Adequate penetration, good contrast resolution  
-**Patient Positioning:** Appropriate anatomical positioning demonstrated  
-**Image Resolution:** High-quality digital acquisition (theoretical)  
+**Projection:** AP/PA and/or Lateral views  
+**Technical Quality:** Optimal penetration, minimal rotation  
+**Patient Positioning:** Anatomically correct alignment demonstrated  
+**Radiation Dose:** Optimized according to ALARA principles  
 
 ---
 
-## SYSTEMATIC RADIOLOGICAL FINDINGS
+## CRITICAL ALIGNMENT ANALYSIS
 
-### Osseous Structures
-- **Bone Density:** Normal trabecular pattern observed
-- **Cortical Integrity:** Intact cortical margins throughout visible structures
-- **Joint Spaces:** Preserved joint space width (normal: 2-4mm)
-- **Alignment:** Anatomically appropriate alignment maintained
-- **Growth Plates:** Age-appropriate appearance (if applicable)
+### Anatomical Reference Lines & Measurements
 
-### Soft Tissue Assessment
-- **Muscle Shadows:** Normal soft tissue density patterns
-- **Fat Planes:** Preserved anatomical fat planes
-- **Swelling:** No evidence of significant soft tissue swelling
-- **Foreign Bodies:** No radiopaque foreign objects identified
+#### Spinal Alignment (Example - Cervical)
+- **Cervical Lordosis:** 20-40° (Normal range)
+- **C1-C2 Atlantoaxial Joint:** <3mm ADI (atlantodental interval)
+- **Posterior Cervical Line:** Smooth curvature maintained
+- **Spinolaminar Line:** Continuous alignment verified
+- **Prevertebral Soft Tissue:** <7mm at C2, <22mm at C6
 
-### Specific Anatomical Regions
-- **Metaphyseal Region:** Normal metaphyseal flare
-- **Diaphyseal Region:** Normal cortical thickness (typical: 3-5mm)
-- **Epiphyseal Region:** Age-appropriate ossification centers
+#### Long Bone Alignment Parameters
+- **Anatomical Axis:** Straight longitudinal axis preserved
+- **Mechanical Axis:** Load-bearing alignment assessed
+- **Joint Line Convergence:** Parallel joint surfaces
+- **Angular Deformity Assessment:** Valgus/varus angulation measured
 
----
+### Specific Regional Alignment
 
-## PATHOLOGICAL ASSESSMENT
+#### Hip Joint Alignment
+- **Shenton's Line:** Smooth continuous arc
+- **Acetabular Angle:** 25-40° (normal range)
+- **Center-Edge Angle:** >25° (adequate coverage)
+- **Femoral Head Coverage:** Concentrically positioned
 
-### Normal Findings (Demo)
-✅ **Bone Architecture:** Normal trabecular pattern  
-✅ **Joint Integrity:** No evidence of joint space narrowing  
-✅ **Cortical Continuity:** No apparent cortical disruption  
-✅ **Alignment:** Normal anatomical relationships  
+#### Knee Alignment
+- **Femorotibial Angle:** 5-7° valgus (physiologic)
+- **Joint Space Width:** 3-5mm (medial/lateral)
+- **Patellar Position:** Central tracking assessed
+- **Tibial Plateau Angle:** 7-10° posterior slope
 
-### Potential Abnormalities to Assess
-🔍 **Fractures:** Would evaluate for cortical breaks, displacement  
-🔍 **Degenerative Changes:** Would assess for osteophytes, sclerosis  
-🔍 **Infection:** Would look for osteolytic lesions, periosteal reaction  
-🔍 **Neoplasia:** Would evaluate for bone destruction, soft tissue masses  
-
-### Measurement Parameters (Example)
-- **Cortical Index:** Normal range (0.45-0.55)
-- **Trabecular Bone Score:** Within normal limits
-- **Angular Measurements:** Anatomically appropriate angles
+#### Ankle/Foot Alignment
+- **Tibiotalar Angle:** 92-96° (mortise alignment)
+- **Calcaneal Pitch:** 20-30° (lateral view)
+- **Meary's Line:** Straight talar-first metatarsal axis
+- **Böhler's Angle:** 25-40° (calcaneal tuberosity)
 
 ---
 
-## RADIOLOGICAL IMPRESSION
+## BILATERAL SYMMETRY ASSESSMENT
 
-**Primary Assessment:** Demonstration of systematic radiological evaluation  
-**Confidence Level:** Educational example (not actual diagnosis)  
-**Clinical Correlation:** Required for definitive interpretation  
+### Comparative Measurements
+- **Right vs Left Comparison:** Symmetric alignment verified
+- **Angular Measurements:** Within 5° bilateral tolerance
+- **Joint Space Symmetry:** Comparable measurements
+- **Bone Length Assessment:** <1cm discrepancy acceptable
 
-### Differential Considerations
-1. **Normal Variant:** Most likely in demo scenario
-2. **Age-Related Changes:** Would correlate with patient age
-3. **Pathological Process:** Would require clinical correlation
-
----
-
-## CLINICAL RECOMMENDATIONS
-
-### Immediate Actions
-- **Clinical Correlation:** Patient history and physical examination essential
-- **Comparison Studies:** Previous imaging for interval change assessment
-- **Additional Views:** Consider specialized projections if indicated
-
-### Follow-up Imaging
-- **Timeline:** Based on clinical presentation and findings
-- **Modality Selection:** Plain films, CT, MRI, or nuclear medicine as indicated
-- **Contrast Studies:** If vascular or detailed soft tissue evaluation needed
-
-### Interdisciplinary Consultation
-- **Orthopedic Evaluation:** For musculoskeletal concerns
-- **Rheumatology Consultation:** If inflammatory arthropathy suspected
-- **Oncology Referral:** If neoplastic process considered
+### Rotational Assessment
+- **AP View Rotation:** Symmetric pedicle shadows
+- **Lateral View Quality:** True lateral positioning
+- **Oblique Views:** Optimal facet joint visualization
 
 ---
 
-## TECHNICAL NOTES
+## JOINT CONGRUENCY ANALYSIS
 
-**Reporting Standards:** Follows ACR guidelines for radiological reporting  
-**Quality Assurance:** Digital image optimization parameters applied  
-**Radiation Dose:** ALARA principles followed (theoretical)  
+### Articular Surface Assessment
+- **Joint Space Preservation:** Uniform 2-4mm width
+- **Subchondral Bone:** Intact sclerotic line
+- **Articular Margins:** Smooth cortical outline
+- **Joint Effusion Signs:** No capsular distension
+
+### Subluxation/Dislocation Evaluation
+- **Concentricity Index:** >75% (hip coverage)
+- **Translation Measurements:** <2mm displacement
+- **Angulation Assessment:** <5° from normal
+- **Instability Patterns:** Static vs dynamic evaluation
 
 ---
 
-**DISCLAIMER:** This is a demonstration analysis showcasing the structure and format of professional radiological reporting. Real patient care requires actual clinical evaluation, appropriate imaging studies, and qualified medical interpretation.
+## ANGULAR MEASUREMENTS & DEVIATIONS
 
-**For Actual AI Analysis:** Use this application within the Poe Canvas environment for real-time AI-powered radiological assessment.
+### Normal Range References
+| Measurement | Normal Range | Demo Value |
+|-------------|--------------|-------------|
+| Cervical Lordosis | 20-40° | 32° ✓ |
+| Lumbar Lordosis | 40-60° | 52° ✓ |
+| Thoracic Kyphosis | 20-45° | 38° ✓ |
+| Femorotibial Angle | 5-7° valgus | 6° ✓ |
+| Acetabular Angle | 25-40° | 33° ✓ |
+
+### Deviation Analysis
+- **Scoliosis Assessment:** Cobb angle measurement
+- **Coronal Plane Deformity:** Frontal plane alignment
+- **Sagittal Plane Balance:** Anterior-posterior positioning
+- **Rotational Component:** Vertebral rotation assessment
 
 ---
-*Report Generated: Demo Mode | AI X-Ray Analysis Assistant v1.0*
+
+## PATHOLOGICAL ALIGNMENT ASSESSMENT
+
+### Fracture-Related Misalignment
+🔍 **Angulation:** Would measure degrees of deformity  
+🔍 **Displacement:** Percentage of cortical width  
+🔍 **Rotation:** Clinical and radiographic assessment  
+🔍 **Shortening:** Actual vs functional length  
+
+### Degenerative Alignment Changes
+🔍 **Joint Space Narrowing:** Progressive measurement  
+🔍 **Osteophyte Formation:** Marginal bone growth  
+🔍 **Subchondral Sclerosis:** Reactive bone changes  
+🔍 **Subluxation Patterns:** Chronic instability  
+
+---
+
+## DEVELOPMENTAL ALIGNMENT VARIATIONS
+
+### Pediatric Considerations
+- **Growth Plate Alignment:** Physeal orientation
+- **Developmental Angles:** Age-appropriate ranges
+- **Ossification Centers:** Sequential appearance
+- **Growth Disturbances:** Angular deformity patterns
+
+### Adult Variants
+- **Anatomical Variations:** Within normal limits
+- **Compensatory Changes:** Adjacent segment adaptation
+- **Age-Related Changes:** Physiologic degeneration
+
+---
+
+## BIOMECHANICAL ASSESSMENT
+
+### Load Distribution Analysis
+- **Weight-Bearing Alignment:** Mechanical axis evaluation
+- **Stress Concentration:** High-load region assessment
+- **Compensatory Mechanisms:** Adjacent joint adaptation
+- **Functional Implications:** Movement pattern analysis
+
+### Stability Evaluation
+- **Static Stability:** Bony constraint assessment
+- **Dynamic Factors:** Ligamentous contribution
+- **Muscular Control:** Functional stability requirements
+
+---
+
+## CLINICAL IMPRESSION
+
+**Primary Assessment:** Comprehensive alignment analysis demonstration  
+**Confidence Level:** Educational example (95% for demo purposes)  
+**Critical Findings:** No acute alignment abnormalities (demo)  
+**Clinical Significance:** Normal variant within acceptable limits  
+
+### Differential Alignment Considerations
+1. **Normal Anatomical Variant:** Most likely (demo scenario)
+2. **Compensatory Alignment:** Secondary to adjacent pathology
+3. **Early Degenerative Changes:** Age-related modifications
+4. **Subclinical Instability:** Requires dynamic assessment
+
+---
+
+## ALIGNMENT-SPECIFIC RECOMMENDATIONS
+
+### Immediate Assessment
+- **Dynamic Studies:** Stress views if instability suspected
+- **Comparative Views:** Previous imaging for progression
+- **Functional Evaluation:** Clinical correlation essential
+- **Load-Bearing Assessment:** Weight-bearing views indicated
+
+### Monitoring Protocol
+- **Serial Alignment:** Track progressive changes
+- **Angular Measurement:** Quantitative assessment
+- **Functional Impact:** Clinical symptom correlation
+- **Treatment Response:** Post-intervention alignment
+
+### Advanced Imaging Considerations
+- **CT Reconstruction:** 3D alignment assessment
+- **MRI Evaluation:** Soft tissue constraint analysis
+- **Dynamic Fluoroscopy:** Real-time motion evaluation
+- **Nuclear Medicine:** Metabolic activity assessment
+
+---
+
+## TECHNICAL ALIGNMENT NOTES
+
+**Measurement Accuracy:** ±2° standard deviation  
+**Reference Standards:** International orthopedic guidelines  
+**Quality Assurance:** Calibrated measurement tools  
+**Reproducibility:** Inter-observer reliability >90%  
+
+---
+
+**CRITICAL NOTE:** This demonstration showcases the complexity and precision required in radiological alignment assessment. Actual clinical evaluation demands:
+- Precise measurement techniques
+- Correlation with clinical presentation
+- Understanding of normal variants
+- Recognition of pathological deviations
+
+**For Real AI-Powered Alignment Analysis:** Access this application through Poe Canvas for actual image-specific measurements and clinical correlations.
+
+---
+*Advanced Alignment Assessment Demo | AI X-Ray Analysis Assistant v2.0*
                 `;
                 
                 analysisResult.innerHTML = marked.parse(demoAnalysis);
@@ -469,11 +571,12 @@
                 // Set demo key findings and recommendations
                 document.getElementById('keyFindings').innerHTML = `
                     <ul class="list-disc list-inside space-y-1">
-                        <li><strong>Bone Architecture:</strong> Normal trabecular pattern</li>
-                        <li><strong>Cortical Integrity:</strong> Intact margins</li>
-                        <li><strong>Joint Spaces:</strong> Preserved (2-4mm)</li>
-                        <li><strong>Alignment:</strong> Anatomically appropriate</li>
-                        <li><strong>Demo Note:</strong> Real findings would be image-specific</li>
+                        <li><strong>Anatomical Alignment:</strong> Within normal parameters</li>
+                        <li><strong>Angular Measurements:</strong> All values within standard ranges</li>
+                        <li><strong>Joint Congruency:</strong> Concentrically positioned</li>
+                        <li><strong>Bilateral Symmetry:</strong> <5° variance bilateral</li>
+                        <li><strong>Reference Lines:</strong> Continuous anatomical landmarks</li>
+                        <li><strong>Demo Note:</strong> Real analysis includes precise measurements</li>
                     </ul>
                 `;
                 document.getElementById('recommendations').innerHTML = `
