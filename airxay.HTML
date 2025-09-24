@@ -222,40 +222,60 @@
             fileInput.value = '';
         }
 
-        // Register handler for AI response
-        window.Poe.registerHandler("xray-analysis", (result, context) => {
-            const loadingState = document.getElementById('loadingState');
-            const analysisContent = document.getElementById('analysisContent');
-            const errorState = document.getElementById('errorState');
-            const analysisResult = document.getElementById('analysisResult');
+        // Wait for Poe API to be available and register handler
+        function initializePoeAPI() {
+            if (window.Poe && window.Poe.registerHandler) {
+                // Register handler for AI response
+                window.Poe.registerHandler("xray-analysis", (result, context) => {
+                    const loadingState = document.getElementById('loadingState');
+                    const analysisContent = document.getElementById('analysisContent');
+                    const errorState = document.getElementById('errorState');
+                    const analysisResult = document.getElementById('analysisResult');
 
-            if (result.responses && result.responses.length > 0) {
-                const response = result.responses[0];
-                
-                if (response.status === "error") {
-                    loadingState.classList.add('hidden');
-                    errorState.classList.remove('hidden');
-                    document.getElementById('errorMessage').textContent = response.statusText || "An error occurred during analysis.";
-                } else if (response.status === "incomplete") {
-                    // Update with partial content while streaming
-                    analysisResult.innerHTML = marked.parse(response.content);
-                } else if (response.status === "complete") {
-                    // Final analysis complete
-                    loadingState.classList.add('hidden');
-                    analysisContent.classList.remove('hidden');
-                    
-                    // Parse and display the full analysis
-                    const fullAnalysis = response.content;
-                    analysisResult.innerHTML = marked.parse(fullAnalysis);
-                    
-                    // Extract key findings and recommendations if possible
-                    extractKeyPoints(fullAnalysis);
-                }
+                    if (result.responses && result.responses.length > 0) {
+                        const response = result.responses[0];
+                        
+                        if (response.status === "error") {
+                            loadingState.classList.add('hidden');
+                            errorState.classList.remove('hidden');
+                            document.getElementById('errorMessage').textContent = response.statusText || "An error occurred during analysis.";
+                        } else if (response.status === "incomplete") {
+                            // Update with partial content while streaming
+                            analysisResult.innerHTML = marked.parse(response.content);
+                        } else if (response.status === "complete") {
+                            // Final analysis complete
+                            loadingState.classList.add('hidden');
+                            analysisContent.classList.remove('hidden');
+                            
+                            // Parse and display the full analysis
+                            const fullAnalysis = response.content;
+                            analysisResult.innerHTML = marked.parse(fullAnalysis);
+                            
+                            // Extract key findings and recommendations if possible
+                            extractKeyPoints(fullAnalysis);
+                        }
+                    }
+                });
+                console.log("Poe API handler registered successfully");
+            } else {
+                // Retry after a short delay
+                setTimeout(initializePoeAPI, 100);
             }
-        });
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializePoeAPI);
+        // Also try immediately in case DOM is already ready
+        initializePoeAPI();
 
         async function analyzeXray() {
             if (!selectedFile) return;
+
+            // Check if Poe API is available
+            if (!window.Poe || !window.Poe.sendUserMessage) {
+                showError("Poe API is not available. Please ensure you're running this in the Poe Canvas environment.");
+                return;
+            }
 
             // Show results section with loading state
             const resultsSection = document.getElementById('resultsSection');
@@ -280,9 +300,10 @@
                     }
                 );
             } catch (error) {
+                console.error("Analysis error:", error);
                 loadingState.classList.add('hidden');
                 errorState.classList.remove('hidden');
-                document.getElementById('errorMessage').textContent = error.message || "Failed to start analysis.";
+                document.getElementById('errorMessage').textContent = error.message || "Failed to start analysis. Please try again.";
             }
         }
 
