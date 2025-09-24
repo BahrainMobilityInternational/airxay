@@ -81,11 +81,25 @@
                     </button>
                 </div>
                 <div id="imagePreview" class="hidden">
-                    <img id="previewImg" class="max-w-full max-h-64 mx-auto rounded-lg shadow-md">
+                    <div class="relative inline-block">
+                        <img id="previewImg" class="max-w-full max-h-64 mx-auto rounded-lg shadow-md">
+                        <canvas id="annotationCanvas" class="absolute top-0 left-0 pointer-events-none rounded-lg"></canvas>
+                    </div>
                     <p id="fileName" class="mt-2 text-sm text-gray-600 dark:text-gray-300"></p>
                     <button type="button" class="mt-2 text-primary hover:text-primary-dark text-sm" onclick="removeImage()">
                         <i class="fas fa-times mr-1"></i>Remove
                     </button>
+                    <div id="annotationControls" class="mt-2 flex justify-center space-x-2 hidden">
+                        <button onclick="clearAnnotations()" class="text-xs bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded">
+                            <i class="fas fa-eraser mr-1"></i>Clear Annotations
+                        </button>
+                        <button onclick="toggleAnnotations()" class="text-xs bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
+                            <i class="fas fa-eye mr-1"></i>Toggle Markers
+                        </button>
+                        <button onclick="testAnnotations()" class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded">
+                            <i class="fas fa-vial mr-1"></i>Test Markers
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -210,6 +224,14 @@
                 uploadContent.classList.add('hidden');
                 imagePreview.classList.remove('hidden');
                 analyzeBtn.disabled = false;
+                
+                // Clear any existing annotations
+                clearAnnotations();
+                
+                // Initialize canvas after image loads
+                previewImg.onload = function() {
+                    setupCanvas();
+                };
             };
             reader.readAsDataURL(file);
         }
@@ -244,15 +266,17 @@
                             document.getElementById('errorMessage').textContent = response.statusText || "An error occurred during analysis.";
                         } else if (response.status === "incomplete") {
                             // Update with partial content while streaming
-                            analysisResult.innerHTML = marked.parse(response.content);
+                            const cleanContent = processAnalysisContent(response.content);
+                            analysisResult.innerHTML = marked.parse(cleanContent);
                         } else if (response.status === "complete") {
                             // Final analysis complete
                             loadingState.classList.add('hidden');
                             analysisContent.classList.remove('hidden');
                             
-                            // Parse and display the full analysis
+                            // Process the full analysis with annotations
                             const fullAnalysis = response.content;
-                            analysisResult.innerHTML = marked.parse(fullAnalysis);
+                            const cleanContent = processAnalysisContent(fullAnalysis);
+                            analysisResult.innerHTML = marked.parse(cleanContent);
                             
                             // Extract key findings and recommendations if possible
                             extractKeyPoints(fullAnalysis);
@@ -331,7 +355,7 @@
             try {
                 // Send image to AI for analysis
                 await window.Poe.sendUserMessage(
-                    "@Claude-Sonnet-4 You are an expert diagnostic radiologist specializing in disease detection and pathology recognition. Perform comprehensive X-ray analysis with focus on disease identification:\n\n**CLINICAL INFORMATION & TECHNIQUE:**\n- Projection type and technical quality\n- Patient positioning and image adequacy\n- Radiation parameters assessment\n\n**SYSTEMATIC DISEASE DETECTION:**\n- Pattern recognition for pathological processes\n- Bone lesion characterization (lytic/sclerotic/mixed)\n- Joint pathology identification (arthritis types, erosions)\n- Soft tissue abnormalities and masses\n- Calcification patterns and significance\n- Growth disturbances and developmental anomalies\n\n**SPECIFIC PATHOLOGY ASSESSMENT:**\n- **Fractures**: Type, displacement, comminution, healing stage\n- **Infections**: Osteomyelitis, septic arthritis, abscess formation\n- **Tumors**: Primary vs metastatic, benign vs malignant features\n- **Arthritis**: Osteoarthritis, rheumatoid, crystalline, septic\n- **Metabolic Disease**: Osteoporosis, osteomalacia, hyperparathyroidism\n- **Congenital Disorders**: Dysplasias, syndromes, developmental variants\n- **Vascular Disease**: Calcifications, ischemia, avascular necrosis\n\n**DISEASE STAGING & SEVERITY:**\n- Grade pathological findings (mild/moderate/severe)\n- Stage disease progression where applicable\n- Assess functional impact and prognosis\n- Identify urgent vs non-urgent findings\n\n**DIFFERENTIAL DIAGNOSIS:**\n- List 3-5 most likely diagnoses ranked by probability\n- Explain distinguishing features for each\n- Provide confidence levels (%) for diagnoses\n- Consider mimics and alternative explanations\n\n**RADIOLOGICAL SIGNS & PATTERNS:**\n- Identify classic radiological signs\n- Describe pathognomonic features\n- Note associated findings and complications\n- Assess disease activity and chronicity\n\n**ALIGNMENT ANALYSIS:**\n- Anatomical alignment with normal ranges\n- Angular measurements and deviations\n- Joint congruency and stability assessment\n- Biomechanical implications\n\n**CLINICAL CORRELATION:**\n- Correlate findings with likely symptoms\n- Suggest clinical examination focus\n- Recommend laboratory tests if indicated\n- Identify red flag features requiring urgent attention\n\n**DIAGNOSTIC IMPRESSION:**\n- Primary diagnosis with confidence level\n- Secondary/incidental findings\n- Disease stage and severity assessment\n- Clinical significance and urgency level\n\n**RECOMMENDATIONS:**\n- Additional imaging studies needed\n- Specialist referral requirements\n- Follow-up timeline based on findings\n- Treatment implications\n\nFocus heavily on disease detection, pathological pattern recognition, and accurate diagnosis. Use specific medical terminology and provide confidence levels for all diagnoses.",
+                    "@Claude-Sonnet-4 You are an expert diagnostic radiologist. Analyze this X-ray with precise anatomical localization of findings. For EVERY significant finding, provide specific location coordinates:\n\n**IMPORTANT: LOCATION ANNOTATION PROTOCOL**\nFor each finding, specify the location using this format:\n[ANNOTATION: region_name | x_percent,y_percent | finding_description | severity]\n\nExample: [ANNOTATION: left_femur | 45,60 | cortical_break | moderate]\n\nUse percentages from top-left corner (0,0) to bottom-right (100,100).\n\n**SYSTEMATIC ANALYSIS WITH LOCALIZATION:**\n\n**TECHNICAL ASSESSMENT:**\n- Image quality and positioning\n- Anatomical coverage and orientation\n\n**ANATOMICAL REGION MAPPING:**\n- Identify all visible anatomical structures\n- Note normal anatomical landmarks\n- Map coordinate system for findings\n\n**PATHOLOGICAL FINDINGS WITH COORDINATES:**\n- **Fractures**: Exact location, type, displacement [ANNOTATION required]\n- **Bone Lesions**: Location, size, characteristics [ANNOTATION required]\n- **Joint Abnormalities**: Specific joint involvement [ANNOTATION required]\n- **Soft Tissue Changes**: Swelling, masses, calcifications [ANNOTATION required]\n- **Alignment Issues**: Specific misalignment points [ANNOTATION required]\n\n**DISEASE DETECTION WITH LOCALIZATION:**\n- **Infections**: Bone/joint involvement sites [ANNOTATION required]\n- **Tumors**: Primary location and extent [ANNOTATION required]\n- **Arthritis**: Affected joint compartments [ANNOTATION required]\n- **Metabolic Changes**: Specific bone involvement [ANNOTATION required]\n\n**MEASUREMENT ANNOTATIONS:**\n- Angular measurements with reference points [ANNOTATION required]\n- Distance measurements between landmarks [ANNOTATION required]\n- Size measurements of lesions [ANNOTATION required]\n\n**DIFFERENTIAL DIAGNOSIS:**\n- Primary diagnosis with confidence level\n- Alternative diagnoses with distinguishing features\n- Location-specific differential considerations\n\n**CLINICAL SIGNIFICANCE:**\n- Functional impact of located findings\n- Urgency based on anatomical involvement\n- Treatment implications for specific locations\n\n**RECOMMENDATIONS:**\n- Targeted additional imaging for specific regions\n- Clinical examination focus areas\n- Specialist referral requirements\n\nCRITICAL: Use the [ANNOTATION: region | x,y | description | severity] format for EVERY significant finding. Be precise with coordinates - imagine the image as a grid from 0-100% horizontally and vertically.",
                     {
                         attachments: [selectedFile],
                         handler: "xray-analysis",
@@ -602,6 +626,9 @@
                 
                 analysisResult.innerHTML = marked.parse(demoAnalysis);
                 
+                // Add demo annotations to show the feature
+                addDemoAnnotations();
+                
                 // Set demo key findings and recommendations
                 document.getElementById('keyFindings').innerHTML = `
                     <ul class="list-disc list-inside space-y-1">
@@ -651,6 +678,288 @@
             const resultsSection = document.getElementById('resultsSection');
             resultsSection.classList.add('hidden');
             removeImage();
+        }
+
+        // Annotation system variables
+        let annotations = [];
+        let annotationsVisible = true;
+        let canvas, ctx;
+
+        // Setup canvas for annotations
+        function setupCanvas() {
+            canvas = document.getElementById('annotationCanvas');
+            if (!canvas) {
+                console.error('Canvas element not found');
+                return;
+            }
+            
+            ctx = canvas.getContext('2d');
+            const img = document.getElementById('previewImg');
+            
+            if (img && img.complete && img.naturalWidth > 0) {
+                // Set canvas size to match image display size
+                const rect = img.getBoundingClientRect();
+                canvas.width = img.offsetWidth;
+                canvas.height = img.offsetHeight;
+                
+                // Position canvas to overlay the image
+                canvas.style.width = img.offsetWidth + 'px';
+                canvas.style.height = img.offsetHeight + 'px';
+                
+                console.log('Canvas setup complete:', canvas.width, 'x', canvas.height);
+                drawAnnotations();
+            } else {
+                console.log('Image not ready, waiting...');
+                setTimeout(setupCanvas, 100);
+            }
+        }
+
+        // Initialize canvas for annotations (legacy function name kept for compatibility)
+        function initializeCanvas() {
+            setupCanvas();
+        }
+
+        // Parse annotations from AI response
+        function parseAnnotations(analysisText) {
+            const annotationRegex = /\[ANNOTATION:\s*([^|]+)\s*\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|\s*([^\]]+)\]/g;
+            const newAnnotations = [];
+            let match;
+
+            while ((match = annotationRegex.exec(analysisText)) !== null) {
+                const [, region, coordinates, description, severity] = match;
+                const [x, y] = coordinates.split(',').map(coord => parseFloat(coord.trim()));
+                
+                if (!isNaN(x) && !isNaN(y)) {
+                    newAnnotations.push({
+                        region: region.trim(),
+                        x: x,
+                        y: y,
+                        description: description.trim(),
+                        severity: severity.trim()
+                    });
+                }
+            }
+
+            annotations = newAnnotations;
+            if (annotations.length > 0) {
+                document.getElementById('annotationControls').classList.remove('hidden');
+                initializeCanvas();
+            }
+        }
+
+        // Draw annotations on canvas - Medical style arrows
+        function drawAnnotations() {
+            if (!canvas || !ctx) return;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (!annotationsVisible || annotations.length === 0) return;
+
+            annotations.forEach((annotation, index) => {
+                const x = (annotation.x / 100) * canvas.width;
+                const y = (annotation.y / 100) * canvas.height;
+                
+                // Choose color based on severity and finding type
+                let color;
+                const severity = annotation.severity.toLowerCase();
+                const description = annotation.description.toLowerCase();
+                
+                if (description.includes('fracture') || description.includes('break') || severity === 'severe') {
+                    color = '#ef4444'; // bright red for fractures/severe
+                } else if (description.includes('infection') || description.includes('pneumonia') || severity === 'moderate') {
+                    color = '#f97316'; // orange for infections/moderate
+                } else if (description.includes('normal') || description.includes('landmark')) {
+                    color = '#06b6d4'; // cyan/teal for normal findings
+                } else if (severity === 'mild') {
+                    color = '#eab308'; // yellow for mild findings
+                } else {
+                    color = '#3b82f6'; // blue default
+                }
+
+                // Draw professional medical arrow
+                const arrowLength = 40;
+                const arrowWidth = 8;
+                
+                // Calculate arrow start position (offset from finding)
+                const offsetX = arrowLength * 0.7;
+                const offsetY = arrowLength * 0.7;
+                const startX = x - offsetX;
+                const startY = y - offsetY;
+
+                // Draw arrow shaft
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(x - 8, y - 8);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                // Draw arrowhead
+                const headLength = 12;
+                const headWidth = 8;
+                const angle = Math.atan2(y - 8 - startY, x - 8 - startX);
+                
+                ctx.beginPath();
+                ctx.moveTo(x - 8, y - 8);
+                ctx.lineTo(
+                    x - 8 - headLength * Math.cos(angle - Math.PI / 6),
+                    y - 8 - headLength * Math.sin(angle - Math.PI / 6)
+                );
+                ctx.moveTo(x - 8, y - 8);
+                ctx.lineTo(
+                    x - 8 - headLength * Math.cos(angle + Math.PI / 6),
+                    y - 8 - headLength * Math.sin(angle + Math.PI / 6)
+                );
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                // Fill arrowhead
+                ctx.beginPath();
+                ctx.moveTo(x - 8, y - 8);
+                ctx.lineTo(
+                    x - 8 - headLength * Math.cos(angle - Math.PI / 6),
+                    y - 8 - headLength * Math.sin(angle - Math.PI / 6)
+                );
+                ctx.lineTo(
+                    x - 8 - headLength * Math.cos(angle + Math.PI / 6),
+                    y - 8 - headLength * Math.sin(angle + Math.PI / 6)
+                );
+                ctx.closePath();
+                ctx.fillStyle = color;
+                ctx.fill();
+
+                // Draw finding marker at the point
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, 2 * Math.PI);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Draw label box
+                const labelText = annotation.description;
+                ctx.font = 'bold 12px Arial';
+                const textWidth = ctx.measureText(labelText).width;
+                const padding = 8;
+                
+                // Position label away from arrow
+                let labelX = startX - textWidth - padding;
+                let labelY = startY;
+                
+                // Adjust if label goes off screen
+                if (labelX < 0) labelX = startX + padding;
+                if (labelY < 20) labelY = startY + 25;
+                if (labelY > canvas.height - 20) labelY = startY - 10;
+
+                // Draw label background
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                ctx.fillRect(labelX - padding/2, labelY - 15, textWidth + padding, 20);
+                
+                // Draw label text
+                ctx.fillStyle = '#ffffff';
+                ctx.textAlign = 'left';
+                ctx.fillText(labelText, labelX, labelY);
+
+                // Draw severity indicator
+                const severityText = severity.toUpperCase();
+                ctx.font = 'bold 10px Arial';
+                const severityWidth = ctx.measureText(severityText).width;
+                
+                ctx.fillStyle = color;
+                ctx.fillRect(labelX - padding/2, labelY + 8, severityWidth + padding, 14);
+                
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(severityText, labelX, labelY + 18);
+            });
+        }
+
+        // Clear all annotations
+        function clearAnnotations() {
+            annotations = [];
+            if (canvas && ctx) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            document.getElementById('annotationControls').classList.add('hidden');
+        }
+
+        // Toggle annotation visibility
+        function toggleAnnotations() {
+            annotationsVisible = !annotationsVisible;
+            drawAnnotations();
+        }
+
+        // Add demo annotations for demo mode
+        function addDemoAnnotations() {
+            annotations = [
+                {
+                    region: "demo_landmark",
+                    x: 25,
+                    y: 30,
+                    description: "Anatomical landmark reference",
+                    severity: "normal"
+                },
+                {
+                    region: "demo_measurement",
+                    x: 60,
+                    y: 45,
+                    description: "Measurement point example",
+                    severity: "normal"
+                },
+                {
+                    region: "demo_assessment",
+                    x: 40,
+                    y: 70,
+                    description: "Assessment area demonstration",
+                    severity: "normal"
+                }
+            ];
+            document.getElementById('annotationControls').classList.remove('hidden');
+            initializeCanvas();
+        }
+
+        // Test annotation function for debugging
+        function testAnnotations() {
+            console.log('Testing annotations...');
+            annotations = [
+                {
+                    region: "test_1",
+                    x: 20,
+                    y: 20,
+                    description: "Test Point 1",
+                    severity: "severe"
+                },
+                {
+                    region: "test_2",
+                    x: 50,
+                    y: 50,
+                    description: "Test Point 2",
+                    severity: "moderate"
+                },
+                {
+                    region: "test_3",
+                    x: 80,
+                    y: 80,
+                    description: "Test Point 3",
+                    severity: "mild"
+                }
+            ];
+            
+            console.log('Annotations added:', annotations);
+            document.getElementById('annotationControls').classList.remove('hidden');
+            setupCanvas();
+        }
+
+        // Enhanced analysis content processing
+        function processAnalysisContent(analysisText) {
+            // Parse annotations from the text
+            parseAnnotations(analysisText);
+            
+            // Remove annotation markers from displayed text for cleaner reading
+            const cleanText = analysisText.replace(/\[ANNOTATION:[^\]]+\]/g, '');
+            
+            return cleanText;
         }
 
         function showError(message) {
