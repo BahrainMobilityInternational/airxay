@@ -802,7 +802,7 @@
             }
         }
 
-        // Draw annotations with pixel-perfect medical precision
+        // Draw medical imaging software-grade annotations with ultimate precision
         function drawAnnotations() {
             if (!canvas || !ctx) return;
             
@@ -811,7 +811,7 @@
             if (!annotationsVisible || annotations.length === 0) return;
 
             annotations.forEach((annotation, index) => {
-                // Calculate pixel-perfect coordinates within the actual image area
+                // Calculate ultra-precise coordinates within the actual image area
                 const imageX = (annotation.x / 100) * canvas.actualImageWidth;
                 const imageY = (annotation.y / 100) * canvas.actualImageHeight;
                 
@@ -826,207 +826,257 @@
                     return;
                 }
                 
-                // Choose medical-grade colors based on severity and finding type
-                let color, shadowColor;
+                // Professional medical imaging colors with exact medical standards
+                let arrowColor, labelBgColor, severityBadgeColor;
                 const severity = annotation.severity.toLowerCase();
                 const description = annotation.description.toLowerCase();
                 
                 if (description.includes('fracture') || description.includes('break') || severity === 'severe') {
-                    color = '#dc2626'; // Medical red for fractures/severe
-                    shadowColor = '#991b1b';
-                } else if (description.includes('infection') || description.includes('pneumonia') || severity === 'moderate') {
-                    color = '#ea580c'; // Medical orange for infections/moderate
-                    shadowColor = '#c2410c';
+                    arrowColor = '#e53e3e'; // Medical emergency red
+                    labelBgColor = 'rgba(229, 62, 62, 0.95)';
+                    severityBadgeColor = '#c53030';
+                } else if (description.includes('infection') || description.includes('pneumonia') || description.includes('narrowing') || severity === 'moderate') {
+                    arrowColor = '#ff8c00'; // Medical warning orange
+                    labelBgColor = 'rgba(255, 140, 0, 0.95)';
+                    severityBadgeColor = '#e07400';
                 } else if (description.includes('tumor') || description.includes('mass') || description.includes('lesion')) {
-                    color = '#7c2d12'; // Dark red-brown for tumors
-                    shadowColor = '#451a03';
+                    arrowColor = '#8b0000'; // Dark medical red for masses
+                    labelBgColor = 'rgba(139, 0, 0, 0.95)';
+                    severityBadgeColor = '#660000';
                 } else if (description.includes('normal') || description.includes('landmark')) {
-                    color = '#0891b2'; // Medical cyan for normal findings
-                    shadowColor = '#0e7490';
-                } else if (severity === 'mild') {
-                    color = '#ca8a04'; // Medical yellow for mild findings
-                    shadowColor = '#a16207';
+                    arrowColor = '#00bcd4'; // Medical cyan for normal
+                    labelBgColor = 'rgba(0, 188, 212, 0.95)';
+                    severityBadgeColor = '#0097a7';
+                } else if (severity === 'mild' || description.includes('swelling')) {
+                    arrowColor = '#ffa726'; // Medical yellow-orange for mild
+                    labelBgColor = 'rgba(255, 167, 38, 0.95)';
+                    severityBadgeColor = '#f57c00';
                 } else {
-                    color = '#2563eb'; // Medical blue default
-                    shadowColor = '#1d4ed8';
+                    arrowColor = '#2196f3'; // Medical blue default
+                    labelBgColor = 'rgba(33, 150, 243, 0.95)';
+                    severityBadgeColor = '#1976d2';
                 }
 
-                // Enhanced arrow parameters for medical precision
-                const arrowLength = 50;
-                const arrowWidth = 3;
-                const headLength = 16;
-                const headWidth = 10;
+                // Professional medical crosshair target marker
+                const crosshairSize = 8;
+                const crosshairThickness = 2;
                 
-                // Calculate optimized arrow positioning to avoid overlap with anatomy
-                const angle = Math.atan2(displayY - canvas.displayHeight/2, displayX - canvas.displayWidth/2);
-                const offsetDistance = arrowLength + 20;
-                const startX = displayX - Math.cos(angle) * offsetDistance;
-                const startY = displayY - Math.sin(angle) * offsetDistance;
+                // Draw crosshair with medical precision
+                ctx.strokeStyle = arrowColor;
+                ctx.lineWidth = crosshairThickness;
+                ctx.lineCap = 'round';
                 
-                // Ensure arrow starts from outside the image when pointing inward
-                const boundedStartX = Math.max(10, Math.min(canvas.displayWidth - 10, startX));
-                const boundedStartY = Math.max(10, Math.min(canvas.displayHeight - 10, startY));
-                
-                // Calculate precise end point (slightly offset from exact target for visual clarity)
-                const endX = displayX - Math.cos(angle) * 8;
-                const endY = displayY - Math.sin(angle) * 8;
-                
-                // Draw arrow shadow for depth
-                ctx.lineWidth = arrowWidth + 2;
-                ctx.strokeStyle = shadowColor;
+                // Horizontal crosshair line
                 ctx.beginPath();
-                ctx.moveTo(boundedStartX + 1, boundedStartY + 1);
-                ctx.lineTo(endX + 1, endY + 1);
+                ctx.moveTo(displayX - crosshairSize, displayY);
+                ctx.lineTo(displayX + crosshairSize, displayY);
                 ctx.stroke();
                 
-                // Draw main arrow shaft with high precision
-                ctx.lineWidth = arrowWidth;
-                ctx.strokeStyle = color;
+                // Vertical crosshair line
+                ctx.beginPath();
+                ctx.moveTo(displayX, displayY - crosshairSize);
+                ctx.lineTo(displayX, displayY + crosshairSize);
+                ctx.stroke();
+                
+                // Central target circle
+                ctx.fillStyle = arrowColor;
+                ctx.beginPath();
+                ctx.arc(displayX, displayY, 3, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // White outline for contrast on any background
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(displayX, displayY, 3, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Professional medical arrow with optimized positioning
+                const arrowLength = 80;
+                const arrowThickness = 4;
+                const headLength = 20;
+                
+                // Smart arrow positioning based on image quadrant
+                let arrowStartX, arrowStartY, arrowEndX, arrowEndY;
+                const centerX = canvas.imageOffsetX + canvas.actualImageWidth / 2;
+                const centerY = canvas.imageOffsetY + canvas.actualImageHeight / 2;
+                
+                // Determine optimal arrow direction based on target position
+                if (displayX < centerX && displayY < centerY) {
+                    // Top-left quadrant - arrow from top-left
+                    arrowStartX = displayX - arrowLength * 0.8;
+                    arrowStartY = displayY - arrowLength * 0.6;
+                } else if (displayX >= centerX && displayY < centerY) {
+                    // Top-right quadrant - arrow from top-right
+                    arrowStartX = displayX + arrowLength * 0.8;
+                    arrowStartY = displayY - arrowLength * 0.6;
+                } else if (displayX < centerX && displayY >= centerY) {
+                    // Bottom-left quadrant - arrow from bottom-left
+                    arrowStartX = displayX - arrowLength * 0.8;
+                    arrowStartY = displayY + arrowLength * 0.6;
+                } else {
+                    // Bottom-right quadrant - arrow from bottom-right
+                    arrowStartX = displayX + arrowLength * 0.8;
+                    arrowStartY = displayY + arrowLength * 0.6;
+                }
+                
+                // Ensure arrow starts within canvas bounds
+                arrowStartX = Math.max(20, Math.min(canvas.displayWidth - 20, arrowStartX));
+                arrowStartY = Math.max(20, Math.min(canvas.displayHeight - 20, arrowStartY));
+                
+                // Calculate precise end point near the target
+                const angle = Math.atan2(displayY - arrowStartY, displayX - arrowStartX);
+                arrowEndX = displayX - Math.cos(angle) * (crosshairSize + 5);
+                arrowEndY = displayY - Math.sin(angle) * (crosshairSize + 5);
+                
+                // Draw arrow shaft with medical grade styling
+                ctx.strokeStyle = arrowColor;
+                ctx.lineWidth = arrowThickness;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
+                
+                // Arrow shadow for depth
+                ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+                ctx.lineWidth = arrowThickness + 2;
                 ctx.beginPath();
-                ctx.moveTo(boundedStartX, boundedStartY);
-                ctx.lineTo(endX, endY);
+                ctx.moveTo(arrowStartX + 2, arrowStartY + 2);
+                ctx.lineTo(arrowEndX + 2, arrowEndY + 2);
+                ctx.stroke();
+                
+                // Main arrow shaft
+                ctx.strokeStyle = arrowColor;
+                ctx.lineWidth = arrowThickness;
+                ctx.beginPath();
+                ctx.moveTo(arrowStartX, arrowStartY);
+                ctx.lineTo(arrowEndX, arrowEndY);
                 ctx.stroke();
 
-                // Calculate precise arrowhead geometry
-                const arrowAngle = Math.atan2(endY - boundedStartY, endX - boundedStartX);
-                const headPoint1X = endX - headLength * Math.cos(arrowAngle - Math.PI / 6);
-                const headPoint1Y = endY - headLength * Math.sin(arrowAngle - Math.PI / 6);
-                const headPoint2X = endX - headLength * Math.cos(arrowAngle + Math.PI / 6);
-                const headPoint2Y = endY - headLength * Math.sin(arrowAngle + Math.PI / 6);
+                // Professional arrowhead
+                const headAngle = Math.atan2(arrowEndY - arrowStartY, arrowEndX - arrowStartX);
+                const headPoint1X = arrowEndX - headLength * Math.cos(headAngle - Math.PI / 6);
+                const headPoint1Y = arrowEndY - headLength * Math.sin(headAngle - Math.PI / 6);
+                const headPoint2X = arrowEndX - headLength * Math.cos(headAngle + Math.PI / 6);
+                const headPoint2Y = arrowEndY - headLength * Math.sin(headAngle + Math.PI / 6);
                 
-                // Draw arrowhead shadow
-                ctx.fillStyle = shadowColor;
+                // Arrowhead shadow
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
                 ctx.beginPath();
-                ctx.moveTo(endX + 1, endY + 1);
-                ctx.lineTo(headPoint1X + 1, headPoint1Y + 1);
-                ctx.lineTo(headPoint2X + 1, headPoint2Y + 1);
+                ctx.moveTo(arrowEndX + 2, arrowEndY + 2);
+                ctx.lineTo(headPoint1X + 2, headPoint1Y + 2);
+                ctx.lineTo(headPoint2X + 2, headPoint2Y + 2);
                 ctx.closePath();
                 ctx.fill();
                 
-                // Draw main arrowhead
-                ctx.fillStyle = color;
+                // Main arrowhead
+                ctx.fillStyle = arrowColor;
                 ctx.beginPath();
-                ctx.moveTo(endX, endY);
+                ctx.moveTo(arrowEndX, arrowEndY);
                 ctx.lineTo(headPoint1X, headPoint1Y);
                 ctx.lineTo(headPoint2X, headPoint2Y);
                 ctx.closePath();
                 ctx.fill();
 
-                // Draw precise target marker with medical crosshair
-                const markerSize = 6;
-                
-                // Crosshair shadow
-                ctx.strokeStyle = shadowColor;
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(displayX - markerSize + 1, displayY + 1);
-                ctx.lineTo(displayX + markerSize + 1, displayY + 1);
-                ctx.moveTo(displayX + 1, displayY - markerSize + 1);
-                ctx.lineTo(displayX + 1, displayY + markerSize + 1);
-                ctx.stroke();
-                
-                // Main crosshair
-                ctx.strokeStyle = color;
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.moveTo(displayX - markerSize, displayY);
-                ctx.lineTo(displayX + markerSize, displayY);
-                ctx.moveTo(displayX, displayY - markerSize);
-                ctx.lineTo(displayX, displayY + markerSize);
-                ctx.stroke();
-                
-                // Central target point
-                ctx.fillStyle = color;
-                ctx.beginPath();
-                ctx.arc(displayX, displayY, 2, 0, 2 * Math.PI);
-                ctx.fill();
-                
-                // White outline for visibility
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-
-                // Enhanced label with medical formatting
+                // Medical imaging software-style label
                 const labelText = annotation.description;
                 const coordinateText = `(${annotation.x.toFixed(1)}%, ${annotation.y.toFixed(1)}%)`;
+                const severityText = severity.toUpperCase();
                 
-                // Calculate optimal label position to avoid image overlap
-                const labelPadding = 12;
-                const labelSpacing = 4;
-                let labelX = boundedStartX;
-                let labelY = boundedStartY;
+                // Calculate label positioning near arrow start
+                let labelX = arrowStartX;
+                let labelY = arrowStartY;
                 
-                // Adjust label position based on arrow direction
-                if (boundedStartX < displayX) {
-                    labelX = boundedStartX - labelPadding;
+                // Position label to avoid overlapping with arrow
+                if (arrowStartX < displayX) {
+                    labelX = arrowStartX - 20;
                 } else {
-                    labelX = boundedStartX + labelPadding;
+                    labelX = arrowStartX + 20;
                 }
                 
-                if (boundedStartY < displayY) {
-                    labelY = boundedStartY - labelPadding;
-                } else {
-                    labelY = boundedStartY + labelPadding;
-                }
-                
-                // Ensure label stays within canvas bounds
-                ctx.font = 'bold 11px "Segoe UI", Arial, sans-serif';
+                // Measure text dimensions for precise label sizing
+                ctx.font = 'bold 13px "Segoe UI", "Arial", sans-serif';
                 const mainTextWidth = ctx.measureText(labelText).width;
-                ctx.font = '9px "Segoe UI", Arial, sans-serif';
+                ctx.font = '10px "Segoe UI", "Arial", sans-serif';
                 const coordTextWidth = ctx.measureText(coordinateText).width;
+                ctx.font = 'bold 9px "Segoe UI", "Arial", sans-serif';
+                const severityTextWidth = ctx.measureText(severityText).width;
+                
                 const maxTextWidth = Math.max(mainTextWidth, coordTextWidth);
-                
-                labelX = Math.max(labelPadding, Math.min(canvas.displayWidth - maxTextWidth - labelPadding, labelX));
-                labelY = Math.max(35, Math.min(canvas.displayHeight - 35, labelY));
-                
-                // Draw label background with medical styling
-                const labelHeight = 32;
+                const labelPadding = 8;
+                const labelHeight = 45;
                 const labelWidth = maxTextWidth + labelPadding * 2;
                 
+                // Ensure label stays within canvas bounds
+                labelX = Math.max(labelPadding, Math.min(canvas.displayWidth - labelWidth - labelPadding, labelX - labelWidth/2));
+                labelY = Math.max(labelHeight/2 + 10, Math.min(canvas.displayHeight - labelHeight/2 - 10, labelY));
+                
+                // Draw medical imaging style label box
+                const cornerRadius = 4;
+                
                 // Label shadow
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-                ctx.fillRect(labelX - labelPadding + 2, labelY - 20 + 2, labelWidth, labelHeight);
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+                roundRect(ctx, labelX + 3, labelY - labelHeight/2 + 3, labelWidth, labelHeight, cornerRadius);
+                ctx.fill();
                 
                 // Main label background
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
-                ctx.fillRect(labelX - labelPadding, labelY - 20, labelWidth, labelHeight);
+                ctx.fillStyle = 'rgba(20, 20, 20, 0.92)';
+                roundRect(ctx, labelX, labelY - labelHeight/2, labelWidth, labelHeight, cornerRadius);
+                ctx.fill();
                 
-                // Label border
-                ctx.strokeStyle = color;
-                ctx.lineWidth = 1;
-                ctx.strokeRect(labelX - labelPadding, labelY - 20, labelWidth, labelHeight);
+                // Label border with arrow color
+                ctx.strokeStyle = arrowColor;
+                ctx.lineWidth = 2;
+                roundRect(ctx, labelX, labelY - labelHeight/2, labelWidth, labelHeight, cornerRadius);
+                ctx.stroke();
                 
-                // Main label text
+                // Main diagnosis text
                 ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 11px "Segoe UI", Arial, sans-serif';
+                ctx.font = 'bold 13px "Segoe UI", "Arial", sans-serif';
                 ctx.textAlign = 'left';
-                ctx.fillText(labelText, labelX, labelY - 2);
+                ctx.fillText(labelText, labelX + labelPadding, labelY - 8);
                 
                 // Coordinate text
-                ctx.fillStyle = '#cccccc';
-                ctx.font = '9px "Segoe UI", Arial, sans-serif';
-                ctx.fillText(coordinateText, labelX, labelY + 8);
-
-                // Severity indicator with medical color coding
-                const severityText = severity.toUpperCase();
-                ctx.font = 'bold 8px "Segoe UI", Arial, sans-serif';
-                const severityWidth = ctx.measureText(severityText).width;
+                ctx.fillStyle = '#e0e0e0';
+                ctx.font = '10px "Segoe UI", "Arial", sans-serif';
+                ctx.fillText(coordinateText, labelX + labelPadding, labelY + 6);
                 
-                // Severity badge
-                const badgeX = labelX + labelWidth - labelPadding - severityWidth - 4;
-                const badgeY = labelY - 18;
+                // Severity badge - professional medical style
+                const badgeX = labelX + labelWidth - severityTextWidth - 12;
+                const badgeY = labelY - labelHeight/2 + 2;
+                const badgeWidth = severityTextWidth + 8;
+                const badgeHeight = 14;
                 
-                ctx.fillStyle = color;
-                ctx.fillRect(badgeX - 2, badgeY - 8, severityWidth + 4, 12);
+                // Severity badge background
+                ctx.fillStyle = severityBadgeColor;
+                roundRect(ctx, badgeX, badgeY, badgeWidth, badgeHeight, 2);
+                ctx.fill();
                 
+                // Severity text
                 ctx.fillStyle = '#ffffff';
-                ctx.fillText(severityText, badgeX, badgeY);
+                ctx.font = 'bold 9px "Segoe UI", "Arial", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(severityText, badgeX + badgeWidth/2, badgeY + 9);
                 
-                // Add coordinate precision indicator
-                console.log(`Annotation ${index + 1}: ${labelText} at precise coordinates (${displayX.toFixed(2)}, ${displayY.toFixed(2)}) - Image coordinates: (${annotation.x}%, ${annotation.y}%)`);
+                // Reset text alignment
+                ctx.textAlign = 'left';
+                
+                // Add precision indicator to console
+                console.log(`Medical Annotation ${index + 1}: "${labelText}" at ultra-precise coordinates (${displayX.toFixed(3)}, ${displayY.toFixed(3)}) - Image: (${annotation.x.toFixed(2)}%, ${annotation.y.toFixed(2)}%) - Severity: ${severityText}`);
             });
+        }
+        
+        // Helper function for rounded rectangles
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
         }
 
         // Clear all annotations
