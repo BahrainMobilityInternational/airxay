@@ -1123,48 +1123,52 @@
             initializeCanvas();
         }
 
-        // Test annotation function with ultra-precise coordinates
+        // Test annotation function with randomized coordinates for demonstration
         function testAnnotations() {
-            console.log('Testing high-precision annotations...');
+            console.log('Testing high-precision annotations with randomized positions...');
+            
+            // Generate randomized but realistic coordinates for different findings
+            const generateRandomCoord = (min, max) => Math.random() * (max - min) + min;
+            
             annotations = [
                 {
-                    region: "left_upper_quadrant",
-                    x: 23.7,
-                    y: 18.4,
-                    description: "Suspected acute fracture line",
-                    severity: "severe"
-                },
-                {
-                    region: "central_joint_space",
-                    x: 47.3,
-                    y: 52.8,
-                    description: "Joint space narrowing",
+                    region: "anatomical_region_1",
+                    x: parseFloat(generateRandomCoord(15, 35).toFixed(1)),
+                    y: parseFloat(generateRandomCoord(15, 35).toFixed(1)),
+                    description: "Suspected cortical irregularity",
                     severity: "moderate"
                 },
                 {
-                    region: "right_cortical_margin",
-                    x: 71.2,
-                    y: 34.6,
-                    description: "Cortical thinning",
+                    region: "anatomical_region_2",
+                    x: parseFloat(generateRandomCoord(40, 60).toFixed(1)),
+                    y: parseFloat(generateRandomCoord(40, 65).toFixed(1)),
+                    description: "Joint space assessment",
                     severity: "mild"
                 },
                 {
-                    region: "trabecular_pattern",
-                    x: 38.9,
-                    y: 67.1,
-                    description: "Abnormal trabecular pattern",
-                    severity: "moderate"
+                    region: "anatomical_region_3",
+                    x: parseFloat(generateRandomCoord(65, 85).toFixed(1)),
+                    y: parseFloat(generateRandomCoord(25, 45).toFixed(1)),
+                    description: "Bone density evaluation",
+                    severity: "normal"
                 },
                 {
-                    region: "soft_tissue_shadow",
-                    x: 84.5,
-                    y: 76.3,
-                    description: "Soft tissue swelling",
+                    region: "anatomical_region_4",
+                    x: parseFloat(generateRandomCoord(30, 50).toFixed(1)),
+                    y: parseFloat(generateRandomCoord(60, 80).toFixed(1)),
+                    description: "Trabecular pattern analysis",
                     severity: "mild"
+                },
+                {
+                    region: "anatomical_region_5",
+                    x: parseFloat(generateRandomCoord(70, 90).toFixed(1)),
+                    y: parseFloat(generateRandomCoord(65, 85).toFixed(1)),
+                    description: "Soft tissue examination",
+                    severity: "normal"
                 }
             ];
             
-            console.log('High-precision annotations added:', annotations.length);
+            console.log('Randomized high-precision annotations generated:', annotations.length);
             annotations.forEach((ann, i) => {
                 console.log(`${i + 1}. ${ann.description} at (${ann.x}%, ${ann.y}%) - ${ann.severity}`);
             });
