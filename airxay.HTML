@@ -331,7 +331,7 @@
             try {
                 // Send image to AI for analysis
                 await window.Poe.sendUserMessage(
-                    "@Claude-Sonnet-4 Please analyze this X-ray image as a medical AI assistant. Provide a detailed analysis including: 1) Image quality assessment, 2) Anatomical structures visible, 3) Any abnormal findings or potential pathology, 4) Areas of concern if any, 5) Recommendations for follow-up. Please be thorough but remember this is for educational purposes only and should not replace professional medical diagnosis.",
+                    "@Claude-Sonnet-4 You are an experienced radiologist AI assistant. Analyze this X-ray image with clinical precision. Provide a comprehensive radiological report in the following structure:\n\n**CLINICAL INFORMATION & TECHNIQUE:**\n- Image type and projection\n- Technical quality assessment\n- Patient positioning\n\n**FINDINGS:**\n- Skeletal structures (bones, joints, alignment)\n- Soft tissues (muscles, organs visible)\n- Specific measurements if applicable\n- Comparative analysis (bilateral comparison if relevant)\n\n**PATHOLOGICAL ASSESSMENT:**\n- Normal findings\n- Abnormal findings (if any)\n- Differential diagnoses\n- Severity grading\n\n**IMPRESSION:**\n- Primary diagnosis\n- Secondary findings\n- Clinical significance\n\n**RECOMMENDATIONS:**\n- Follow-up imaging if needed\n- Clinical correlation\n- Additional studies\n\nUse proper medical terminology and be specific about anatomical locations. Include confidence levels for findings. Remember this is for educational purposes only.",
                     {
                         attachments: [selectedFile],
                         handler: "xray-analysis",
@@ -358,44 +358,132 @@
                 analysisContent.classList.remove('hidden');
                 
                 const demoAnalysis = `
-# Demo X-Ray Analysis Report
-
-**Note: This is a demonstration analysis. For real AI analysis, use this app in Poe Canvas.**
-
-## 1. Image Quality Assessment
-- **Image Quality**: Good overall contrast and exposure
-- **Positioning**: Adequate positioning for diagnostic purposes
-- **Technical Parameters**: Appropriate penetration and sharpness
-
-## 2. Anatomical Structures Visible
-- **Bones**: Clear visualization of bone structures
-- **Soft Tissues**: Soft tissue contrast is adequate
-- **Joint Spaces**: Joint spaces are well-defined
-
-## 3. Findings
-- **Bone Integrity**: Bone cortex appears intact
-- **Alignment**: Normal anatomical alignment observed
-- **Density**: Normal bone density patterns
-
-## 4. Areas of Concern
-- This is a demonstration - actual findings would depend on the specific image uploaded
-- Real analysis would identify any abnormalities, fractures, or pathological changes
-
-## 5. Recommendations
-- **Demo Mode**: Upload this app to Poe Canvas for real AI analysis
-- **Professional Review**: Always consult with a qualified radiologist
-- **Follow-up**: Clinical correlation recommended for any concerning findings
+# RADIOLOGICAL ANALYSIS REPORT
+**DEMO VERSION - For educational demonstration only**
 
 ---
 
-*This demo analysis is for educational purposes only and does not represent actual medical findings.*
+## CLINICAL INFORMATION & TECHNIQUE
+
+**Examination Type:** Digital Radiography  
+**Projection:** AP/Lateral view (example)  
+**Technical Quality:** Adequate penetration, good contrast resolution  
+**Patient Positioning:** Appropriate anatomical positioning demonstrated  
+**Image Resolution:** High-quality digital acquisition (theoretical)  
+
+---
+
+## SYSTEMATIC RADIOLOGICAL FINDINGS
+
+### Osseous Structures
+- **Bone Density:** Normal trabecular pattern observed
+- **Cortical Integrity:** Intact cortical margins throughout visible structures
+- **Joint Spaces:** Preserved joint space width (normal: 2-4mm)
+- **Alignment:** Anatomically appropriate alignment maintained
+- **Growth Plates:** Age-appropriate appearance (if applicable)
+
+### Soft Tissue Assessment
+- **Muscle Shadows:** Normal soft tissue density patterns
+- **Fat Planes:** Preserved anatomical fat planes
+- **Swelling:** No evidence of significant soft tissue swelling
+- **Foreign Bodies:** No radiopaque foreign objects identified
+
+### Specific Anatomical Regions
+- **Metaphyseal Region:** Normal metaphyseal flare
+- **Diaphyseal Region:** Normal cortical thickness (typical: 3-5mm)
+- **Epiphyseal Region:** Age-appropriate ossification centers
+
+---
+
+## PATHOLOGICAL ASSESSMENT
+
+### Normal Findings (Demo)
+✅ **Bone Architecture:** Normal trabecular pattern  
+✅ **Joint Integrity:** No evidence of joint space narrowing  
+✅ **Cortical Continuity:** No apparent cortical disruption  
+✅ **Alignment:** Normal anatomical relationships  
+
+### Potential Abnormalities to Assess
+🔍 **Fractures:** Would evaluate for cortical breaks, displacement  
+🔍 **Degenerative Changes:** Would assess for osteophytes, sclerosis  
+🔍 **Infection:** Would look for osteolytic lesions, periosteal reaction  
+🔍 **Neoplasia:** Would evaluate for bone destruction, soft tissue masses  
+
+### Measurement Parameters (Example)
+- **Cortical Index:** Normal range (0.45-0.55)
+- **Trabecular Bone Score:** Within normal limits
+- **Angular Measurements:** Anatomically appropriate angles
+
+---
+
+## RADIOLOGICAL IMPRESSION
+
+**Primary Assessment:** Demonstration of systematic radiological evaluation  
+**Confidence Level:** Educational example (not actual diagnosis)  
+**Clinical Correlation:** Required for definitive interpretation  
+
+### Differential Considerations
+1. **Normal Variant:** Most likely in demo scenario
+2. **Age-Related Changes:** Would correlate with patient age
+3. **Pathological Process:** Would require clinical correlation
+
+---
+
+## CLINICAL RECOMMENDATIONS
+
+### Immediate Actions
+- **Clinical Correlation:** Patient history and physical examination essential
+- **Comparison Studies:** Previous imaging for interval change assessment
+- **Additional Views:** Consider specialized projections if indicated
+
+### Follow-up Imaging
+- **Timeline:** Based on clinical presentation and findings
+- **Modality Selection:** Plain films, CT, MRI, or nuclear medicine as indicated
+- **Contrast Studies:** If vascular or detailed soft tissue evaluation needed
+
+### Interdisciplinary Consultation
+- **Orthopedic Evaluation:** For musculoskeletal concerns
+- **Rheumatology Consultation:** If inflammatory arthropathy suspected
+- **Oncology Referral:** If neoplastic process considered
+
+---
+
+## TECHNICAL NOTES
+
+**Reporting Standards:** Follows ACR guidelines for radiological reporting  
+**Quality Assurance:** Digital image optimization parameters applied  
+**Radiation Dose:** ALARA principles followed (theoretical)  
+
+---
+
+**DISCLAIMER:** This is a demonstration analysis showcasing the structure and format of professional radiological reporting. Real patient care requires actual clinical evaluation, appropriate imaging studies, and qualified medical interpretation.
+
+**For Actual AI Analysis:** Use this application within the Poe Canvas environment for real-time AI-powered radiological assessment.
+
+---
+*Report Generated: Demo Mode | AI X-Ray Analysis Assistant v1.0*
                 `;
                 
                 analysisResult.innerHTML = marked.parse(demoAnalysis);
                 
                 // Set demo key findings and recommendations
-                document.getElementById('keyFindings').innerHTML = 'This is a demo analysis showing sample X-ray interpretation. Real findings would be specific to your uploaded image.';
-                document.getElementById('recommendations').innerHTML = 'Use this app in Poe Canvas for actual AI-powered X-ray analysis with real medical insights.';
+                document.getElementById('keyFindings').innerHTML = `
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>Bone Architecture:</strong> Normal trabecular pattern</li>
+                        <li><strong>Cortical Integrity:</strong> Intact margins</li>
+                        <li><strong>Joint Spaces:</strong> Preserved (2-4mm)</li>
+                        <li><strong>Alignment:</strong> Anatomically appropriate</li>
+                        <li><strong>Demo Note:</strong> Real findings would be image-specific</li>
+                    </ul>
+                `;
+                document.getElementById('recommendations').innerHTML = `
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>Clinical Correlation:</strong> Essential for diagnosis</li>
+                        <li><strong>Comparison Studies:</strong> Previous imaging review</li>
+                        <li><strong>Follow-up:</strong> Based on clinical presentation</li>
+                        <li><strong>Real AI Analysis:</strong> Available in Poe Canvas</li>
+                    </ul>
+                `;
                 
             }, 2000);
         }
