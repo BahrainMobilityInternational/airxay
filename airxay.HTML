@@ -222,9 +222,12 @@
             fileInput.value = '';
         }
 
+        let isPoeEnvironment = false;
+
         // Wait for Poe API to be available and register handler
         function initializePoeAPI() {
             if (window.Poe && window.Poe.registerHandler) {
+                isPoeEnvironment = true;
                 // Register handler for AI response
                 window.Poe.registerHandler("xray-analysis", (result, context) => {
                     const loadingState = document.getElementById('loadingState');
@@ -257,10 +260,46 @@
                     }
                 });
                 console.log("Poe API handler registered successfully");
+                hideAPIWarning();
             } else {
-                // Retry after a short delay
-                setTimeout(initializePoeAPI, 100);
+                // Check if we're in an iframe (likely Poe environment) but API not ready
+                if (window !== window.top) {
+                    // Retry after a short delay
+                    setTimeout(initializePoeAPI, 100);
+                } else {
+                    // Not in Poe environment, show demo mode
+                    showDemoMode();
+                }
             }
+        }
+
+        function hideAPIWarning() {
+            const warningElement = document.getElementById('apiWarning');
+            if (warningElement) {
+                warningElement.remove();
+            }
+        }
+
+        function showDemoMode() {
+            // Add demo mode notice after medical disclaimer
+            const disclaimer = document.querySelector('.bg-red-50');
+            const demoNotice = document.createElement('div');
+            demoNotice.className = 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6';
+            demoNotice.innerHTML = `
+                <div class="flex items-start">
+                    <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
+                    <div>
+                        <h3 class="text-blue-800 dark:text-blue-300 font-semibold mb-2">Demo Mode</h3>
+                        <p class="text-blue-700 dark:text-blue-400 text-sm mb-2">
+                            You're running this outside the Poe Canvas environment. AI analysis is not available, but you can see a demo analysis.
+                        </p>
+                        <p class="text-blue-700 dark:text-blue-400 text-sm">
+                            For full AI-powered analysis, use this app in <a href="https://poe.com" target="_blank" class="underline font-medium">Poe Canvas</a>.
+                        </p>
+                    </div>
+                </div>
+            `;
+            disclaimer.parentNode.insertBefore(demoNotice, disclaimer.nextSibling);
         }
 
         // Initialize when DOM is ready
@@ -270,12 +309,6 @@
 
         async function analyzeXray() {
             if (!selectedFile) return;
-
-            // Check if Poe API is available
-            if (!window.Poe || !window.Poe.sendUserMessage) {
-                showError("Poe API is not available. Please ensure you're running this in the Poe Canvas environment.");
-                return;
-            }
 
             // Show results section with loading state
             const resultsSection = document.getElementById('resultsSection');
@@ -287,6 +320,13 @@
             loadingState.classList.remove('hidden');
             analysisContent.classList.add('hidden');
             errorState.classList.add('hidden');
+
+            // Check if Poe API is available
+            if (!isPoeEnvironment) {
+                // Demo mode - show sample analysis
+                showDemoAnalysis();
+                return;
+            }
 
             try {
                 // Send image to AI for analysis
@@ -305,6 +345,59 @@
                 errorState.classList.remove('hidden');
                 document.getElementById('errorMessage').textContent = error.message || "Failed to start analysis. Please try again.";
             }
+        }
+
+        function showDemoAnalysis() {
+            const loadingState = document.getElementById('loadingState');
+            const analysisContent = document.getElementById('analysisContent');
+            const analysisResult = document.getElementById('analysisResult');
+            
+            // Simulate loading time
+            setTimeout(() => {
+                loadingState.classList.add('hidden');
+                analysisContent.classList.remove('hidden');
+                
+                const demoAnalysis = `
+# Demo X-Ray Analysis Report
+
+**Note: This is a demonstration analysis. For real AI analysis, use this app in Poe Canvas.**
+
+## 1. Image Quality Assessment
+- **Image Quality**: Good overall contrast and exposure
+- **Positioning**: Adequate positioning for diagnostic purposes
+- **Technical Parameters**: Appropriate penetration and sharpness
+
+## 2. Anatomical Structures Visible
+- **Bones**: Clear visualization of bone structures
+- **Soft Tissues**: Soft tissue contrast is adequate
+- **Joint Spaces**: Joint spaces are well-defined
+
+## 3. Findings
+- **Bone Integrity**: Bone cortex appears intact
+- **Alignment**: Normal anatomical alignment observed
+- **Density**: Normal bone density patterns
+
+## 4. Areas of Concern
+- This is a demonstration - actual findings would depend on the specific image uploaded
+- Real analysis would identify any abnormalities, fractures, or pathological changes
+
+## 5. Recommendations
+- **Demo Mode**: Upload this app to Poe Canvas for real AI analysis
+- **Professional Review**: Always consult with a qualified radiologist
+- **Follow-up**: Clinical correlation recommended for any concerning findings
+
+---
+
+*This demo analysis is for educational purposes only and does not represent actual medical findings.*
+                `;
+                
+                analysisResult.innerHTML = marked.parse(demoAnalysis);
+                
+                // Set demo key findings and recommendations
+                document.getElementById('keyFindings').innerHTML = 'This is a demo analysis showing sample X-ray interpretation. Real findings would be specific to your uploaded image.';
+                document.getElementById('recommendations').innerHTML = 'Use this app in Poe Canvas for actual AI-powered X-ray analysis with real medical insights.';
+                
+            }, 2000);
         }
 
         function extractKeyPoints(analysisText) {
