@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI X-Ray Analysis Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        'primary-dark': '#4B4BC9'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+    <!-- Dark mode detection -->
+    <script>
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+    </script>
+
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="flex items-center justify-center mb-4">
+                <div class="bg-primary p-3 rounded-full mr-3">
+                    <i class="fas fa-x-ray text-white text-2xl"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-white">AI X-Ray Analysis Assistant</h1>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Upload an X-ray image to get AI-powered analysis and potential findings. This tool is for educational purposes only.
+            </p>
+        </div>
+
+        <!-- Medical Disclaimer -->
+        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
+            <div class="flex items-start">
+                <i class="fas fa-exclamation-triangle text-red-500 mt-1 mr-3"></i>
+                <div>
+                    <h3 class="text-red-800 dark:text-red-300 font-semibold mb-2">Medical Disclaimer</h3>
+                    <p class="text-red-700 dark:text-red-400 text-sm">
+                        This AI analysis is for educational and research purposes only. It is NOT a substitute for professional medical diagnosis, treatment, or advice. Always consult qualified healthcare professionals for medical concerns.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
+                <i class="fas fa-upload mr-2 text-primary"></i>
+                Upload X-Ray Image
+            </h2>
+            
+            <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-primary transition-colors duration-300" id="dropZone">
+                <input type="file" id="fileInput" accept="image/*" class="hidden">
+                <div id="uploadContent">
+                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-600 dark:text-gray-300 mb-2">Drop your X-ray image here or click to browse</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Supports JPG, PNG, WEBP formats</p>
+                    <button type="button" class="mt-4 bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg transition-colors duration-300" onclick="document.getElementById('fileInput').click()">
+                        Choose File
+                    </button>
+                </div>
+                <div id="imagePreview" class="hidden">
+                    <img id="previewImg" class="max-w-full max-h-64 mx-auto rounded-lg shadow-md">
+                    <p id="fileName" class="mt-2 text-sm text-gray-600 dark:text-gray-300"></p>
+                    <button type="button" class="mt-2 text-primary hover:text-primary-dark text-sm" onclick="removeImage()">
+                        <i class="fas fa-times mr-1"></i>Remove
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-4 flex justify-center">
+                <button id="analyzeBtn" class="bg-primary hover:bg-primary-dark text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled onclick="analyzeXray()">
+                    <i class="fas fa-brain mr-2"></i>
+                    Analyze X-Ray
+                </button>
+            </div>
+        </div>
+
+        <!-- Analysis Results -->
+        <div id="resultsSection" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hidden">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
+                <i class="fas fa-chart-line mr-2 text-primary"></i>
+                Analysis Results
+            </h2>
+            
+            <div id="loadingState" class="text-center py-8">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
+                <p class="text-gray-600 dark:text-gray-300">Analyzing X-ray image... This may take a moment.</p>
+            </div>
+
+            <div id="analysisContent" class="hidden">
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
+                    <h3 class="text-blue-800 dark:text-blue-300 font-semibold mb-2 flex items-center">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        AI Analysis Report
+                    </h3>
+                    <div id="analysisResult" class="text-blue-700 dark:text-blue-400 prose dark:prose-invert max-w-none"></div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4 mt-4">
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-800 dark:text-white mb-2 flex items-center">
+                            <i class="fas fa-search mr-2 text-primary"></i>
+                            Key Findings
+                        </h4>
+                        <div id="keyFindings" class="text-gray-600 dark:text-gray-300 text-sm"></div>
+                    </div>
+
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-800 dark:text-white mb-2 flex items-center">
+                            <i class="fas fa-lightbulb mr-2 text-primary"></i>
+                            Recommendations
+                        </h4>
+                        <div id="recommendations" class="text-gray-600 dark:text-gray-300 text-sm"></div>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <button onclick="resetAnalysis()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors duration-300">
+                        <i class="fas fa-redo mr-2"></i>
+                        Analyze Another Image
+                    </button>
+                </div>
+            </div>
+
+            <div id="errorState" class="hidden text-center py-8">
+                <i class="fas fa-exclamation-circle text-red-500 text-4xl mb-4"></i>
+                <p class="text-red-600 dark:text-red-400 font-semibold">Analysis Failed</p>
+                <p id="errorMessage" class="text-gray-600 dark:text-gray-300 mt-2"></p>
+                <button onclick="resetAnalysis()" class="mt-4 bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg transition-colors duration-300">
+                    Try Again
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedFile = null;
+
+        // File upload handling
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const uploadContent = document.getElementById('uploadContent');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        const fileName = document.getElementById('fileName');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+
+        // Drag and drop functionality
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-primary', 'bg-blue-50', 'dark:bg-blue-900/20');
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-primary', 'bg-blue-50', 'dark:bg-blue-900/20');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-primary', 'bg-blue-50', 'dark:bg-blue-900/20');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        function handleFileSelect(file) {
+            if (!file.type.startsWith('image/')) {
+                showError('Please select a valid image file.');
+                return;
+            }
+
+            selectedFile = file;
+            
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImg.src = e.target.result;
+                fileName.textContent = file.name;
+                uploadContent.classList.add('hidden');
+                imagePreview.classList.remove('hidden');
+                analyzeBtn.disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeImage() {
+            selectedFile = null;
+            uploadContent.classList.remove('hidden');
+            imagePreview.classList.add('hidden');
+            analyzeBtn.disabled = true;
+            fileInput.value = '';
+        }
+
+        // Register handler for AI response
+        window.Poe.registerHandler("xray-analysis", (result, context) => {
+            const loadingState = document.getElementById('loadingState');
+            const analysisContent = document.getElementById('analysisContent');
+            const errorState = document.getElementById('errorState');
+            const analysisResult = document.getElementById('analysisResult');
+
+            if (result.responses && result.responses.length > 0) {
+                const response = result.responses[0];
+                
+                if (response.status === "error") {
+                    loadingState.classList.add('hidden');
+                    errorState.classList.remove('hidden');
+                    document.getElementById('errorMessage').textContent = response.statusText || "An error occurred during analysis.";
+                } else if (response.status === "incomplete") {
+                    // Update with partial content while streaming
+                    analysisResult.innerHTML = marked.parse(response.content);
+                } else if (response.status === "complete") {
+                    // Final analysis complete
+                    loadingState.classList.add('hidden');
+                    analysisContent.classList.remove('hidden');
+                    
+                    // Parse and display the full analysis
+                    const fullAnalysis = response.content;
+                    analysisResult.innerHTML = marked.parse(fullAnalysis);
+                    
+                    // Extract key findings and recommendations if possible
+                    extractKeyPoints(fullAnalysis);
+                }
+            }
+        });
+
+        async function analyzeXray() {
+            if (!selectedFile) return;
+
+            // Show results section with loading state
+            const resultsSection = document.getElementById('resultsSection');
+            const loadingState = document.getElementById('loadingState');
+            const analysisContent = document.getElementById('analysisContent');
+            const errorState = document.getElementById('errorState');
+
+            resultsSection.classList.remove('hidden');
+            loadingState.classList.remove('hidden');
+            analysisContent.classList.add('hidden');
+            errorState.classList.add('hidden');
+
+            try {
+                // Send image to AI for analysis
+                await window.Poe.sendUserMessage(
+                    "@Claude-Sonnet-4 Please analyze this X-ray image as a medical AI assistant. Provide a detailed analysis including: 1) Image quality assessment, 2) Anatomical structures visible, 3) Any abnormal findings or potential pathology, 4) Areas of concern if any, 5) Recommendations for follow-up. Please be thorough but remember this is for educational purposes only and should not replace professional medical diagnosis.",
+                    {
+                        attachments: [selectedFile],
+                        handler: "xray-analysis",
+                        stream: true,
+                        openChat: false
+                    }
+                );
+            } catch (error) {
+                loadingState.classList.add('hidden');
+                errorState.classList.remove('hidden');
+                document.getElementById('errorMessage').textContent = error.message || "Failed to start analysis.";
+            }
+        }
+
+        function extractKeyPoints(analysisText) {
+            // Simple extraction of key points - this could be enhanced
+            const keyFindings = document.getElementById('keyFindings');
+            const recommendations = document.getElementById('recommendations');
+
+            // Look for findings section
+            const findingsMatch = analysisText.match(/(?:findings?|abnormal|pathology)[:\s]+(.*?)(?:\n\n|\d\)|$)/is);
+            if (findingsMatch) {
+                keyFindings.innerHTML = marked.parse(findingsMatch[1].substring(0, 200) + '...');
+            } else {
+                keyFindings.textContent = 'See full analysis above for detailed findings.';
+            }
+
+            // Look for recommendations section
+            const recMatch = analysisText.match(/(?:recommend|suggestion|follow[-\s]?up)[:\s]+(.*?)(?:\n\n|\d\)|$)/is);
+            if (recMatch) {
+                recommendations.innerHTML = marked.parse(recMatch[1].substring(0, 200) + '...');
+            } else {
+                recommendations.textContent = 'See full analysis above for recommendations.';
+            }
+        }
+
+        function resetAnalysis() {
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.classList.add('hidden');
+            removeImage();
+        }
+
+        function showError(message) {
+            // Create a simple error notification
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            errorDiv.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    ${message}
+                </div>
+            `;
+            document.body.appendChild(errorDiv);
+            
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
