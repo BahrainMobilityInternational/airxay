@@ -331,7 +331,7 @@
             try {
                 // Send image to AI for analysis
                 await window.Poe.sendUserMessage(
-                    "@Claude-Sonnet-4 You are an experienced radiologist. Perform a systematic X-ray analysis with precise alignment assessment:\n\n**CLINICAL INFORMATION & TECHNIQUE:**\n- Projection type (AP/PA/Lateral/Oblique)\n- Technical adequacy (penetration, rotation, angulation)\n- Patient positioning assessment\n\n**ALIGNMENT ANALYSIS (Critical):**\n- Anatomical alignment lines and reference points\n- Angular measurements with normal ranges\n- Bilateral symmetry comparison\n- Joint congruency assessment\n- Bone axis relationships\n- Specific alignment parameters (e.g., cervical lordosis 20-40°, lumbar lordosis 40-60°)\n- Subluxation or dislocation assessment\n\n**SKELETAL FINDINGS:**\n- Bone morphology and architecture\n- Cortical continuity and thickness\n- Trabecular pattern analysis\n- Joint space measurements\n- Growth plate assessment (if applicable)\n\n**SOFT TISSUE EVALUATION:**\n- Soft tissue shadows and density\n- Swelling or asymmetry\n- Fat plane displacement\n\n**PATHOLOGICAL ASSESSMENT:**\n- Normal anatomical variants\n- Abnormal findings with severity grading\n- Differential diagnoses ranked by likelihood\n- Confidence levels for each finding\n\n**MEASUREMENTS & ANGLES:**\n- Provide specific angular measurements where applicable\n- Compare to established normal ranges\n- Note any deviation from anatomical norms\n\n**CLINICAL IMPRESSION:**\n- Primary diagnosis with confidence level\n- Secondary findings\n- Clinical significance and urgency\n\n**RECOMMENDATIONS:**\n- Additional imaging if needed\n- Clinical correlation requirements\n- Follow-up timeline\n\nBe extremely specific about alignment assessment as this is critical for diagnosis. Use precise anatomical terminology and provide numerical values where possible.",
+                    "@Claude-Sonnet-4 You are an expert diagnostic radiologist specializing in disease detection and pathology recognition. Perform comprehensive X-ray analysis with focus on disease identification:\n\n**CLINICAL INFORMATION & TECHNIQUE:**\n- Projection type and technical quality\n- Patient positioning and image adequacy\n- Radiation parameters assessment\n\n**SYSTEMATIC DISEASE DETECTION:**\n- Pattern recognition for pathological processes\n- Bone lesion characterization (lytic/sclerotic/mixed)\n- Joint pathology identification (arthritis types, erosions)\n- Soft tissue abnormalities and masses\n- Calcification patterns and significance\n- Growth disturbances and developmental anomalies\n\n**SPECIFIC PATHOLOGY ASSESSMENT:**\n- **Fractures**: Type, displacement, comminution, healing stage\n- **Infections**: Osteomyelitis, septic arthritis, abscess formation\n- **Tumors**: Primary vs metastatic, benign vs malignant features\n- **Arthritis**: Osteoarthritis, rheumatoid, crystalline, septic\n- **Metabolic Disease**: Osteoporosis, osteomalacia, hyperparathyroidism\n- **Congenital Disorders**: Dysplasias, syndromes, developmental variants\n- **Vascular Disease**: Calcifications, ischemia, avascular necrosis\n\n**DISEASE STAGING & SEVERITY:**\n- Grade pathological findings (mild/moderate/severe)\n- Stage disease progression where applicable\n- Assess functional impact and prognosis\n- Identify urgent vs non-urgent findings\n\n**DIFFERENTIAL DIAGNOSIS:**\n- List 3-5 most likely diagnoses ranked by probability\n- Explain distinguishing features for each\n- Provide confidence levels (%) for diagnoses\n- Consider mimics and alternative explanations\n\n**RADIOLOGICAL SIGNS & PATTERNS:**\n- Identify classic radiological signs\n- Describe pathognomonic features\n- Note associated findings and complications\n- Assess disease activity and chronicity\n\n**ALIGNMENT ANALYSIS:**\n- Anatomical alignment with normal ranges\n- Angular measurements and deviations\n- Joint congruency and stability assessment\n- Biomechanical implications\n\n**CLINICAL CORRELATION:**\n- Correlate findings with likely symptoms\n- Suggest clinical examination focus\n- Recommend laboratory tests if indicated\n- Identify red flag features requiring urgent attention\n\n**DIAGNOSTIC IMPRESSION:**\n- Primary diagnosis with confidence level\n- Secondary/incidental findings\n- Disease stage and severity assessment\n- Clinical significance and urgency level\n\n**RECOMMENDATIONS:**\n- Additional imaging studies needed\n- Specialist referral requirements\n- Follow-up timeline based on findings\n- Treatment implications\n\nFocus heavily on disease detection, pathological pattern recognition, and accurate diagnosis. Use specific medical terminology and provide confidence levels for all diagnoses.",
                     {
                         attachments: [selectedFile],
                         handler: "xray-analysis",
@@ -358,212 +358,246 @@
                 analysisContent.classList.remove('hidden');
                 
                 const demoAnalysis = `
-# COMPREHENSIVE RADIOLOGICAL ANALYSIS REPORT
-**DEMO VERSION - Advanced Alignment Assessment**
+# COMPREHENSIVE DIAGNOSTIC RADIOLOGICAL REPORT
+**DEMO VERSION - Advanced Disease Detection & Diagnosis**
 
 ---
 
 ## CLINICAL INFORMATION & TECHNIQUE
 
-**Examination Type:** Digital Radiography  
-**Projection:** AP/PA and/or Lateral views  
-**Technical Quality:** Optimal penetration, minimal rotation  
-**Patient Positioning:** Anatomically correct alignment demonstrated  
-**Radiation Dose:** Optimized according to ALARA principles  
+**Examination Type:** Digital Radiography with Disease Analysis Protocol  
+**Projection:** Multi-view assessment (AP/PA/Lateral/Oblique)  
+**Technical Quality:** Optimal for pathological assessment  
+**Patient Demographics:** Age-appropriate analysis standards  
+**Clinical Context:** Systematic disease screening performed  
 
 ---
 
-## CRITICAL ALIGNMENT ANALYSIS
+## SYSTEMATIC DISEASE DETECTION ANALYSIS
 
-### Anatomical Reference Lines & Measurements
+### Pattern Recognition Assessment
 
-#### Spinal Alignment (Example - Cervical)
-- **Cervical Lordosis:** 20-40° (Normal range)
-- **C1-C2 Atlantoaxial Joint:** <3mm ADI (atlantodental interval)
-- **Posterior Cervical Line:** Smooth curvature maintained
-- **Spinolaminar Line:** Continuous alignment verified
-- **Prevertebral Soft Tissue:** <7mm at C2, <22mm at C6
+#### Bone Lesion Characterization
+- **Lytic Lesions:** No geographic, moth-eaten, or permeative patterns identified
+- **Sclerotic Lesions:** No areas of increased bone density noted
+- **Mixed Lesions:** No combination patterns observed
+- **Periosteal Reaction:** Smooth cortical surfaces without elevation
+- **Matrix Mineralization:** No abnormal calcification patterns
 
-#### Long Bone Alignment Parameters
-- **Anatomical Axis:** Straight longitudinal axis preserved
-- **Mechanical Axis:** Load-bearing alignment assessed
-- **Joint Line Convergence:** Parallel joint surfaces
-- **Angular Deformity Assessment:** Valgus/varus angulation measured
+#### Joint Pathology Screening
+- **Inflammatory Arthritis:** No erosions, no joint space narrowing
+- **Degenerative Changes:** Minimal age-appropriate wear patterns
+- **Crystalline Arthropathy:** No chondrocalcinosis or urate deposits
+- **Septic Changes:** No bone destruction or soft tissue gas
 
-### Specific Regional Alignment
+### Advanced Pathological Assessment
 
-#### Hip Joint Alignment
-- **Shenton's Line:** Smooth continuous arc
-- **Acetabular Angle:** 25-40° (normal range)
-- **Center-Edge Angle:** >25° (adequate coverage)
-- **Femoral Head Coverage:** Concentrically positioned
+#### Fracture Analysis Protocol
+🔍 **Acute Fractures:** No cortical discontinuity identified  
+🔍 **Stress Fractures:** No sclerotic lines or callus formation  
+🔍 **Pathological Fractures:** No underlying bone weakness  
+🔍 **Healing Assessment:** N/A - no fractures present  
 
-#### Knee Alignment
-- **Femorotibial Angle:** 5-7° valgus (physiologic)
-- **Joint Space Width:** 3-5mm (medial/lateral)
-- **Patellar Position:** Central tracking assessed
-- **Tibial Plateau Angle:** 7-10° posterior slope
+#### Infection Detection Matrix
+🔍 **Osteomyelitis:** No bone destruction, sequestra, or involucrum  
+🔍 **Septic Arthritis:** No joint space widening or erosions  
+🔍 **Soft Tissue Abscess:** No gas patterns or fluid collections  
+🔍 **Chronic Changes:** No sclerosis or deformity patterns  
 
-#### Ankle/Foot Alignment
-- **Tibiotalar Angle:** 92-96° (mortise alignment)
-- **Calcaneal Pitch:** 20-30° (lateral view)
-- **Meary's Line:** Straight talar-first metatarsal axis
-- **Böhler's Angle:** 25-40° (calcaneal tuberosity)
-
----
-
-## BILATERAL SYMMETRY ASSESSMENT
-
-### Comparative Measurements
-- **Right vs Left Comparison:** Symmetric alignment verified
-- **Angular Measurements:** Within 5° bilateral tolerance
-- **Joint Space Symmetry:** Comparable measurements
-- **Bone Length Assessment:** <1cm discrepancy acceptable
-
-### Rotational Assessment
-- **AP View Rotation:** Symmetric pedicle shadows
-- **Lateral View Quality:** True lateral positioning
-- **Oblique Views:** Optimal facet joint visualization
+#### Tumor Screening Protocol
+🔍 **Primary Bone Tumors:** No aggressive or benign lesion patterns  
+🔍 **Metastatic Disease:** No blastic or lytic deposits  
+🔍 **Soft Tissue Masses:** No abnormal density or calcifications  
+🔍 **Cortical Expansion:** No endosteal scalloping or breakthrough  
 
 ---
 
-## JOINT CONGRUENCY ANALYSIS
+## SPECIFIC DISEASE CATEGORIES
 
-### Articular Surface Assessment
-- **Joint Space Preservation:** Uniform 2-4mm width
-- **Subchondral Bone:** Intact sclerotic line
-- **Articular Margins:** Smooth cortical outline
-- **Joint Effusion Signs:** No capsular distension
+### Arthritis Classification System
 
-### Subluxation/Dislocation Evaluation
-- **Concentricity Index:** >75% (hip coverage)
-- **Translation Measurements:** <2mm displacement
-- **Angulation Assessment:** <5° from normal
-- **Instability Patterns:** Static vs dynamic evaluation
+#### Osteoarthritis Assessment (Kellgren-Lawrence Scale)
+- **Grade 0:** No radiographic features (Demo Status: ✓)
+- **Joint Space:** Preserved uniform width 3-4mm
+- **Osteophytes:** None identified
+- **Subchondral Bone:** Normal density and smooth contour
+- **Cysts:** No subchondral cyst formation
 
----
+#### Inflammatory Arthritis Markers
+- **Rheumatoid Pattern:** No marginal erosions or swan-neck deformities
+- **Psoriatic Features:** No pencil-in-cup deformities or DIP involvement
+- **Ankylosing Spondylitis:** No bamboo spine or sacroiliac changes
+- **Crystal Arthropathy:** No chondrocalcinosis or tophi
 
-## ANGULAR MEASUREMENTS & DEVIATIONS
+### Metabolic Bone Disease Assessment
 
-### Normal Range References
-| Measurement | Normal Range | Demo Value |
-|-------------|--------------|-------------|
-| Cervical Lordosis | 20-40° | 32° ✓ |
-| Lumbar Lordosis | 40-60° | 52° ✓ |
-| Thoracic Kyphosis | 20-45° | 38° ✓ |
-| Femorotibial Angle | 5-7° valgus | 6° ✓ |
-| Acetabular Angle | 25-40° | 33° ✓ |
+#### Osteoporosis Evaluation
+- **Cortical Thickness:** Normal 3-5mm (adequate for age)
+- **Trabecular Pattern:** Normal honeycomb architecture
+- **Compression Fractures:** None identified
+- **Bone Density Markers:** Appears adequate (qualitative assessment)
 
-### Deviation Analysis
-- **Scoliosis Assessment:** Cobb angle measurement
-- **Coronal Plane Deformity:** Frontal plane alignment
-- **Sagittal Plane Balance:** Anterior-posterior positioning
-- **Rotational Component:** Vertebral rotation assessment
+#### Other Metabolic Conditions
+- **Osteomalacia:** No Looser zones or coarsened trabeculae
+- **Hyperparathyroidism:** No brown tumors or salt-pepper skull
+- **Paget's Disease:** No cotton wool appearance or blade of grass sign
 
 ---
 
-## PATHOLOGICAL ALIGNMENT ASSESSMENT
+## DIFFERENTIAL DIAGNOSIS MATRIX
 
-### Fracture-Related Misalignment
-🔍 **Angulation:** Would measure degrees of deformity  
-🔍 **Displacement:** Percentage of cortical width  
-🔍 **Rotation:** Clinical and radiographic assessment  
-🔍 **Shortening:** Actual vs functional length  
+### Primary Diagnostic Considerations
 
-### Degenerative Alignment Changes
-🔍 **Joint Space Narrowing:** Progressive measurement  
-🔍 **Osteophyte Formation:** Marginal bone growth  
-🔍 **Subchondral Sclerosis:** Reactive bone changes  
-🔍 **Subluxation Patterns:** Chronic instability  
+| Diagnosis | Probability | Confidence | Key Features |
+|-----------|-------------|------------|--------------|
+| **Normal Variant** | 85% | High | All parameters within normal limits |
+| **Age-Related Changes** | 10% | Medium | Minimal wear patterns consistent with age |
+| **Early Degenerative Disease** | 3% | Low | Subclinical changes possible |
+| **Developmental Anomaly** | 2% | Low | Anatomical variants within normal range |
 
----
-
-## DEVELOPMENTAL ALIGNMENT VARIATIONS
-
-### Pediatric Considerations
-- **Growth Plate Alignment:** Physeal orientation
-- **Developmental Angles:** Age-appropriate ranges
-- **Ossification Centers:** Sequential appearance
-- **Growth Disturbances:** Angular deformity patterns
-
-### Adult Variants
-- **Anatomical Variations:** Within normal limits
-- **Compensatory Changes:** Adjacent segment adaptation
-- **Age-Related Changes:** Physiologic degeneration
+### Excluded Pathologies (High Confidence)
+❌ **Malignancy:** No aggressive bone destruction patterns  
+❌ **Infection:** No inflammatory or destructive changes  
+❌ **Trauma:** No acute or chronic fracture patterns  
+❌ **Metabolic Disease:** No characteristic bone changes  
 
 ---
 
-## BIOMECHANICAL ASSESSMENT
+## RADIOLOGICAL SIGNS & PATTERN ANALYSIS
 
-### Load Distribution Analysis
-- **Weight-Bearing Alignment:** Mechanical axis evaluation
-- **Stress Concentration:** High-load region assessment
-- **Compensatory Mechanisms:** Adjacent joint adaptation
-- **Functional Implications:** Movement pattern analysis
+### Classic Sign Assessment
+- **Shenton's Line:** Intact and smooth (hip integrity)
+- **Blumensaat's Line:** Normal positioning (knee stability)
+- **Klein's Line:** Appropriate relationship (hip development)
+- **Perkins Line:** Normal acetabular coverage
+- **Hilgenreiner's Line:** Symmetric hip development
 
-### Stability Evaluation
-- **Static Stability:** Bony constraint assessment
-- **Dynamic Factors:** Ligamentous contribution
-- **Muscular Control:** Functional stability requirements
-
----
-
-## CLINICAL IMPRESSION
-
-**Primary Assessment:** Comprehensive alignment analysis demonstration  
-**Confidence Level:** Educational example (95% for demo purposes)  
-**Critical Findings:** No acute alignment abnormalities (demo)  
-**Clinical Significance:** Normal variant within acceptable limits  
-
-### Differential Alignment Considerations
-1. **Normal Anatomical Variant:** Most likely (demo scenario)
-2. **Compensatory Alignment:** Secondary to adjacent pathology
-3. **Early Degenerative Changes:** Age-related modifications
-4. **Subclinical Instability:** Requires dynamic assessment
+### Pathognomonic Feature Screen
+- **Codman Triangle:** Not present (no aggressive lesions)
+- **Sunburst Pattern:** Not identified (no osteosarcoma features)
+- **Onion Skin:** Not observed (no Ewing sarcoma pattern)
+- **Ground Glass:** Not detected (no fibrous dysplasia)
 
 ---
 
-## ALIGNMENT-SPECIFIC RECOMMENDATIONS
+## DISEASE STAGING & SEVERITY GRADING
 
-### Immediate Assessment
-- **Dynamic Studies:** Stress views if instability suspected
-- **Comparative Views:** Previous imaging for progression
-- **Functional Evaluation:** Clinical correlation essential
-- **Load-Bearing Assessment:** Weight-bearing views indicated
+### Functional Assessment
+- **Mobility Impact:** No functional limitations predicted
+- **Structural Integrity:** Excellent bone architecture
+- **Load-Bearing Capacity:** Normal weight-bearing ability
+- **Growth Potential:** Normal developmental patterns (if applicable)
 
-### Monitoring Protocol
-- **Serial Alignment:** Track progressive changes
-- **Angular Measurement:** Quantitative assessment
-- **Functional Impact:** Clinical symptom correlation
-- **Treatment Response:** Post-intervention alignment
-
-### Advanced Imaging Considerations
-- **CT Reconstruction:** 3D alignment assessment
-- **MRI Evaluation:** Soft tissue constraint analysis
-- **Dynamic Fluoroscopy:** Real-time motion evaluation
-- **Nuclear Medicine:** Metabolic activity assessment
+### Prognosis Assessment
+- **Short-term:** Excellent prognosis with normal function
+- **Long-term:** Age-appropriate changes expected
+- **Risk Stratification:** Low risk for pathological progression
+- **Monitoring Requirements:** Routine surveillance adequate
 
 ---
 
-## TECHNICAL ALIGNMENT NOTES
+## CLINICAL CORRELATION MATRIX
 
-**Measurement Accuracy:** ±2° standard deviation  
-**Reference Standards:** International orthopedic guidelines  
-**Quality Assurance:** Calibrated measurement tools  
-**Reproducibility:** Inter-observer reliability >90%  
+### Symptom Correlation Analysis
+- **Pain Patterns:** Would not explain significant pain symptoms
+- **Functional Limitations:** Findings don't correlate with major disability
+- **Neurological Symptoms:** No compression or instability patterns
+- **Systemic Features:** No radiographic signs of systemic disease
+
+### Laboratory Correlation
+- **Inflammatory Markers:** Normal radiographic appearance suggests normal ESR/CRP
+- **Bone Turnover Markers:** Likely normal alkaline phosphatase and osteocalcin
+- **Infection Markers:** No radiographic evidence of infection
+- **Tumor Markers:** No suspicious lesions requiring marker assessment
+
+---
+
+## URGENT vs NON-URGENT CLASSIFICATION
+
+### Emergency Assessment (RED FLAGS) ❌
+- **Spinal Cord Compression:** Not identified
+- **Pathological Fracture Risk:** Low risk assessment
+- **Malignancy Suspicion:** No concerning features
+- **Septic Process:** No inflammatory changes
+
+### Routine Follow-up Indications ✅
+- **Age-Appropriate Monitoring:** Standard surveillance intervals
+- **Preventive Care:** Bone health maintenance
+- **Symptom Correlation:** Clinical follow-up as needed
+- **Lifestyle Counseling:** Standard recommendations
 
 ---
 
-**CRITICAL NOTE:** This demonstration showcases the complexity and precision required in radiological alignment assessment. Actual clinical evaluation demands:
-- Precise measurement techniques
-- Correlation with clinical presentation
-- Understanding of normal variants
-- Recognition of pathological deviations
+## ADVANCED DIAGNOSTIC RECOMMENDATIONS
 
-**For Real AI-Powered Alignment Analysis:** Access this application through Poe Canvas for actual image-specific measurements and clinical correlations.
+### Additional Imaging Protocols
+- **MRI Indication:** Not required based on current findings
+- **CT Reconstruction:** Not indicated for current assessment
+- **Nuclear Medicine:** No metabolic activity concerns
+- **Ultrasound:** Soft tissue evaluation if clinically indicated
+
+### Specialist Referral Guidelines
+- **Orthopedic Consultation:** Not urgently required
+- **Rheumatology Referral:** Not indicated by current findings
+- **Oncology Assessment:** No suspicious lesions identified
+- **Endocrine Evaluation:** No metabolic bone disease features
 
 ---
-*Advanced Alignment Assessment Demo | AI X-Ray Analysis Assistant v2.0*
+
+## DIAGNOSTIC IMPRESSION
+
+**PRIMARY DIAGNOSIS:** Normal radiographic appearance (Confidence: 90%)  
+**SECONDARY FINDINGS:** Age-appropriate variants within normal limits  
+**DISEASE STAGE:** N/A - No pathological process identified  
+**SEVERITY GRADE:** Normal anatomical structure  
+**URGENCY LEVEL:** Routine/Non-urgent  
+
+### Clinical Significance Assessment
+- **Immediate Management:** No acute intervention required
+- **Long-term Planning:** Standard preventive care appropriate
+- **Patient Counseling:** Reassuring normal findings
+- **Risk Modification:** General bone health maintenance
+
+---
+
+## TREATMENT IMPLICATIONS & MONITORING
+
+### Immediate Actions Required
+- **Emergency Treatment:** None indicated
+- **Symptom Management:** Address symptoms clinically (not radiographically based)
+- **Activity Restrictions:** No radiographic contraindications
+- **Patient Education:** Normal findings, age-appropriate changes
+
+### Follow-up Protocol
+- **Imaging Interval:** Based on clinical symptoms and age
+- **Monitoring Parameters:** Functional assessment and symptom tracking
+- **Disease Progression:** No progressive pathology anticipated
+- **Quality of Life:** Excellent prognosis for maintained function
+
+---
+
+## TECHNICAL DIAGNOSTIC NOTES
+
+**Pattern Recognition Accuracy:** 95% confidence in normal assessment  
+**Disease Detection Protocol:** Comprehensive systematic analysis completed  
+**False Negative Risk:** <5% based on technical quality and systematic review  
+**Incidental Finding Screen:** No significant incidental pathology  
+
+---
+
+**CRITICAL DIAGNOSTIC NOTE:** This demonstration showcases comprehensive disease detection and diagnostic radiological analysis. Real clinical practice requires:
+
+- Integration of clinical history and examination
+- Correlation with laboratory findings
+- Understanding of disease prevalence and risk factors
+- Recognition of subtle early pathological changes
+- Appropriate use of advanced imaging modalities
+
+**For Actual AI-Powered Disease Detection:** Access this application through Poe Canvas for real-time pathological analysis with actual image-specific disease recognition and diagnostic capabilities.
+
+---
+
+*Advanced Disease Detection & Diagnostic Analysis Demo | AI X-Ray Analysis Assistant v3.0*
                 `;
                 
                 analysisResult.innerHTML = marked.parse(demoAnalysis);
@@ -571,12 +605,12 @@
                 // Set demo key findings and recommendations
                 document.getElementById('keyFindings').innerHTML = `
                     <ul class="list-disc list-inside space-y-1">
-                        <li><strong>Anatomical Alignment:</strong> Within normal parameters</li>
-                        <li><strong>Angular Measurements:</strong> All values within standard ranges</li>
-                        <li><strong>Joint Congruency:</strong> Concentrically positioned</li>
-                        <li><strong>Bilateral Symmetry:</strong> <5° variance bilateral</li>
-                        <li><strong>Reference Lines:</strong> Continuous anatomical landmarks</li>
-                        <li><strong>Demo Note:</strong> Real analysis includes precise measurements</li>
+                        <li><strong>Disease Status:</strong> No pathological processes identified</li>
+                        <li><strong>Fracture Screen:</strong> No cortical discontinuity detected</li>
+                        <li><strong>Tumor Assessment:</strong> No suspicious lesions or masses</li>
+                        <li><strong>Infection Screen:</strong> No signs of osteomyelitis or septic changes</li>
+                        <li><strong>Arthritis Evaluation:</strong> No erosions or joint space narrowing</li>
+                        <li><strong>Confidence Level:</strong> 90% normal variant assessment</li>
                     </ul>
                 `;
                 document.getElementById('recommendations').innerHTML = `
