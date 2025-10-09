@@ -63,9 +63,9 @@
                 <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png,image/webp" class="hidden">
                 <div id="uploadContent">
                     <i class="fas fa-x-ray text-4xl text-gray-400 mb-4"></i>
-                    <p class="text-gray-600 dark:text-gray-300 mb-2"><strong>Upload X-Ray Images Only</strong></p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Medical radiographic images: Chest X-rays, Bone X-rays, Joint X-rays</p>
-                    <p class="text-xs text-red-500 dark:text-red-400 mt-2">⚠️ Only medical X-ray images will be accepted</p>
+                    <p class="text-gray-600 dark:text-gray-300 mb-2"><strong>Upload X-Ray Images or Photos</strong></p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">✅ Digital X-rays, Photos of X-ray films, Chest X-rays, Bone X-rays, Joint X-rays</p>
+                    <p class="text-xs text-blue-500 dark:text-blue-400 mt-2">📱 Phone photos of X-ray films are supported!</p>
                     <button type="button" class="mt-4 bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg transition-colors duration-300" onclick="document.getElementById('fileInput').click()">
                         <i class="fas fa-x-ray mr-2"></i>Choose X-Ray Image
                     </button>
@@ -246,7 +246,7 @@
             reader.readAsDataURL(file);
         }
 
-        // Intelligent X-ray detection function
+        // Intelligent X-ray detection function (accepts photos of X-rays too)
         function analyzeImageForXray(img) {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
@@ -263,40 +263,56 @@
             let grayscalePixels = 0;
             let darkPixels = 0;
             let lightPixels = 0;
+            let mediumPixels = 0;
             let totalPixels = data.length / 4;
+            let blueishPixels = 0; // For X-ray film photos
             
-            // Analyze pixel characteristics typical of X-rays
+            // Analyze pixel characteristics (works for both digital X-rays and photos of X-rays)
             for (let i = 0; i < data.length; i += 4) {
                 const r = data[i];
                 const g = data[i + 1];
                 const b = data[i + 2];
                 
-                // Check if pixel is grayscale (typical of X-rays)
+                // More flexible grayscale detection (accounts for phone camera color casts)
                 const rgDiff = Math.abs(r - g);
                 const rbDiff = Math.abs(r - b);
                 const gbDiff = Math.abs(g - b);
                 
-                if (rgDiff < 15 && rbDiff < 15 && gbDiff < 15) {
+                // Relaxed grayscale criteria for photos of X-rays
+                if (rgDiff < 30 && rbDiff < 30 && gbDiff < 30) {
                     grayscalePixels++;
                 }
                 
-                // Check brightness distribution
+                // Check for X-ray film characteristics (often have blue tint)
+                if (b > r && b > g && (b - Math.max(r, g)) < 40) {
+                    blueishPixels++;
+                }
+                
+                // Enhanced brightness distribution analysis
                 const brightness = (r + g + b) / 3;
-                if (brightness < 80) darkPixels++;
-                if (brightness > 200) lightPixels++;
+                if (brightness < 60) darkPixels++;
+                else if (brightness > 220) lightPixels++;
+                else mediumPixels++;
             }
             
             const grayscaleRatio = grayscalePixels / totalPixels;
             const contrastRatio = (darkPixels + lightPixels) / totalPixels;
+            const blueishRatio = blueishPixels / totalPixels;
+            const mediumRatio = mediumPixels / totalPixels;
             
-            // X-ray characteristics:
-            // - High grayscale ratio (>70%)
-            // - Good contrast distribution (>40%)
-            // - Not predominantly one color
+            // Enhanced X-ray detection criteria:
+            // 1. Traditional digital X-rays: High grayscale + contrast
+            // 2. Photos of X-ray films: May have blue tint + medical contrast
+            // 3. Phone photos of X-rays: Lower grayscale but medical-like distribution
             
-            console.log(`Image Analysis - Grayscale: ${(grayscaleRatio * 100).toFixed(1)}%, Contrast: ${(contrastRatio * 100).toFixed(1)}%`);
+            const isDigitalXray = grayscaleRatio > 0.5 && contrastRatio > 0.3;
+            const isXrayPhoto = (grayscaleRatio > 0.3 || blueishRatio > 0.2) && contrastRatio > 0.2;
+            const hasXrayCharacteristics = mediumRatio < 0.7 && (darkPixels + lightPixels) > totalPixels * 0.2;
             
-            return grayscaleRatio > 0.5 && contrastRatio > 0.3;
+            console.log(`Image Analysis - Grayscale: ${(grayscaleRatio * 100).toFixed(1)}%, Contrast: ${(contrastRatio * 100).toFixed(1)}%, BlueX-ray: ${(blueishRatio * 100).toFixed(1)}%`);
+            
+            // Accept if any X-ray criteria are met
+            return isDigitalXray || isXrayPhoto || hasXrayCharacteristics;
         }
 
         // X-ray specific error display
