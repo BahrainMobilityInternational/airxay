@@ -296,19 +296,19 @@
             const blueishRatio = blueishPixels / totalPixels;
             const mediumRatio = mediumPixels / totalPixels;
             
-            // Enhanced X-ray detection criteria:
-            // 1. Traditional digital X-rays: High grayscale + contrast
-            // 2. Photos of X-ray films: May have blue tint + medical contrast
-            // 3. Phone photos of X-rays: Lower grayscale but medical-like distribution
+            // Very lenient X-ray detection criteria:
+            // Accept almost any image that could potentially be medical
             
-            const isDigitalXray = grayscaleRatio > 0.5 && contrastRatio > 0.3;
-            const isXrayPhoto = (grayscaleRatio > 0.3 || blueishRatio > 0.2) && contrastRatio > 0.2;
-            const hasXrayCharacteristics = mediumRatio < 0.7 && (darkPixels + lightPixels) > totalPixels * 0.2;
+            const isDigitalXray = grayscaleRatio > 0.3 && contrastRatio > 0.2;
+            const isXrayPhoto = (grayscaleRatio > 0.2 || blueishRatio > 0.1) && contrastRatio > 0.15;
+            const hasXrayCharacteristics = contrastRatio > 0.1; // Very basic contrast requirement
+            const hasAnyMedicalPattern = darkPixels > totalPixels * 0.05 && lightPixels > totalPixels * 0.05;
+            const isGrayscalish = grayscaleRatio > 0.15; // Very low threshold
             
             console.log(`Image Analysis - Grayscale: ${(grayscaleRatio * 100).toFixed(1)}%, Contrast: ${(contrastRatio * 100).toFixed(1)}%, BlueX-ray: ${(blueishRatio * 100).toFixed(1)}%`);
             
-            // Accept if any X-ray criteria are met
-            return isDigitalXray || isXrayPhoto || hasXrayCharacteristics;
+            // Accept if ANY of these criteria are met (very permissive)
+            return isDigitalXray || isXrayPhoto || hasXrayCharacteristics || hasAnyMedicalPattern || isGrayscalish;
         }
 
         // X-ray specific error display
