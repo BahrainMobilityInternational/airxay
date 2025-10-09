@@ -213,9 +213,9 @@
                 return;
             }
 
-            // Check file size (X-rays are typically larger files)
-            if (file.size < 50000) { // 50KB minimum
-                showXrayError('File too small. X-ray images are typically larger medical files.');
+            // Check file size (X-rays should be at least a reasonable medical image size)
+            if (file.size < 10000) { // 10KB minimum (more flexible)
+                showXrayError('File too small. Please ensure this is a valid medical X-ray image.');
                 return;
             }
 
@@ -296,7 +296,7 @@
             
             console.log(`Image Analysis - Grayscale: ${(grayscaleRatio * 100).toFixed(1)}%, Contrast: ${(contrastRatio * 100).toFixed(1)}%`);
             
-            return grayscaleRatio > 0.7 && contrastRatio > 0.4;
+            return grayscaleRatio > 0.5 && contrastRatio > 0.3;
         }
 
         // X-ray specific error display
